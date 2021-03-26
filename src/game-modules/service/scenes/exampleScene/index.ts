@@ -11,14 +11,10 @@ export default class ExampleScene extends Scene {
   }
 
   preload() {
-    this.engine.load.preload(this, preloadData);
+    this.engine.load.preload(preloadData);
   }
   create() {
-    this.engine.create.world(this, true, "exampleGrid", "exampleGrassTile", 32);
+    this.engine.create.world(true, "exampleGrid", "exampleGrassTile", 32);
   }
   update() {}
 }
-
-const a = (b: number, g: number) => {
-  return b + g;
-};

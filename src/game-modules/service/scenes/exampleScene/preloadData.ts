@@ -1,4 +1,4 @@
-import { PreloadTypes } from "../../serviceTypes";
+import { PreloadTypes } from "../../../game/types";
 
 const data: PreloadTypes[] = [
   {
