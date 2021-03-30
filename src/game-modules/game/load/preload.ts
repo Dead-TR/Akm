@@ -5,7 +5,9 @@ export function preloadData(this: Scene, data: PreloadTypes[]) {
   data.forEach((unit) => {
     const { method, data } = unit;
 
-    // @ts-ignore: Unreachable code error
-    this.load[method](...data);
+    data.forEach((content) => {
+      // @ts-ignore: Unreachable code error
+      const result = this.load[method](...content);
+    });
   });
 }
