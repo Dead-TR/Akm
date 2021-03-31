@@ -43,9 +43,12 @@ export default class World {
   addSimpleObjects(configs: SimpleObject[]) {
     configs.forEach((config) => {
       const { x, y, imgName, name } = config;
-      debugger;
       this.objects[name] = this.scene.add.image(x, y, imgName);
     });
+  }
+
+  show() {
+    console.log("🚀 ~> ", this);
   }
 }
 
@@ -56,6 +59,5 @@ export function createWorld(
   imgName: string,
   size: number
 ) {
-  console.log("🚀 ~  ~ this", this);
   return new World(this, showWorld, gridName, imgName, size);
 }
