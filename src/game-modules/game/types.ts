@@ -46,3 +46,5 @@ export interface SimpleObject {
   imgName: string;
   name: string;
 }
+
+export type Sides = "top" | "bottom" | "left" | "right" | "stop";

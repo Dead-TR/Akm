@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { AnimationConfig } from "../types";
+import { AnimationConfig, Sides } from "../types";
 import createAnimation from "./animation";
 
 export default class CreateCharacter {
@@ -21,34 +21,36 @@ export default class CreateCharacter {
     createAnimation.call(this.scene, configs);
   }
 
-  move(x: number, y: number, speed = 100, accuracy = 10) {
+  move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
     const xSide =
       this.actor.x - x < -accuracy
-        ? "left"
-        : this.actor.x - x > accuracy
         ? "right"
+        : this.actor.x - x > accuracy
+        ? "left"
         : "stop";
     const ySide =
       this.actor.y - y < -accuracy
-        ? "top"
-        : this.actor.y - y > accuracy
         ? "bottom"
+        : this.actor.y - y > accuracy
+        ? "top"
         : "stop";
 
-    if (xSide === "left") {
+    if (xSide === "right") {
       this.actor.setVelocityX(speed);
-    } else if (xSide === "right") {
+    } else if (xSide === "left") {
       this.actor.setVelocityX(-speed);
     } else {
       this.actor.setVelocityX(0);
     }
 
-    if (ySide === "top") {
+    if (ySide === "bottom") {
       this.actor.setVelocityY(speed);
-    } else if (ySide === "bottom") {
+    } else if (ySide === "top") {
       this.actor.setVelocityY(-speed);
     } else {
       this.actor.setVelocityY(0);
     }
+
+    return [xSide, ySide];
   }
 }
