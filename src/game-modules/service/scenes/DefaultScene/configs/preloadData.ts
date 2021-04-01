@@ -7,20 +7,20 @@ const playerData = {
     startFrame: 0,
     endFrame: 3,
   },
-  path: "game/assets/img/exampleScene/characters/player/",
+  path: "game/assets/img/DefaultScene/characters/player/",
 };
 
 const data: PreloadTypes[] = [
   {
     method: "image",
     data: [
-      ["exampleGrassTile", "game/assets/img/exampleScene/grass.png"],
+      ["exampleGrassTile", "game/assets/img/DefaultScene/grass.png"],
       ["cursor", "game/assets/img/general/cursor.png"],
     ],
   },
   {
     method: "tilemapCSV",
-    data: [["exampleGrid", "game/assets/grids/exampleScene/grass.csv"]],
+    data: [["exampleGrid", "game/assets/grids/DefaultScene/grass.csv"]],
   },
   {
     method: "spritesheet",

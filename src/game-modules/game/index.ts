@@ -1,16 +1,16 @@
 import { createWorld } from "./create/world";
-import { Scene } from "phaser";
 import { preloadData } from "./load/preload";
 import { CreateGameTypes, LoadGameTypes } from "./types";
 import { createPlayer } from "./create/player";
 import createAnimation from "./create/animation";
+import DefaultScene from "../service/scenes/DefaultScene";
 
 export default class Game {
-  scene: Scene;
+  scene: DefaultScene;
   create: CreateGameTypes;
   load: LoadGameTypes;
 
-  constructor(scene: Scene) {
+  constructor(scene: DefaultScene) {
     this.scene = scene;
     this.create = {
       world: createWorld.bind(this.scene),

@@ -3,12 +3,11 @@ import Game from "../../../game";
 import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
 import cursorMove from "./callBacks/cursorMove";
-import playerMove from "./callBacks/playerMove";
 import { playerAnims } from "./configs/animations";
 import { objects } from "./configs/objects";
 import preloadData from "./configs/preloadData";
 
-export default class ExampleScene extends Scene {
+export default class DefaultScene extends Scene {
   engine: Game;
   player: CreatePlayer;
   world: World;
@@ -38,7 +37,7 @@ export default class ExampleScene extends Scene {
     });
   }
   update() {
-    playerMove(this);
+    this.player.move();
     // console.log(this.input.x);
   }
 }

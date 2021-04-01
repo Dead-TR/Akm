@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { game } from "../../game-modules";
 import css from "./style.module.scss";
 
 export const Game = () => {
-  const [project, setProject] = useState(game);
+  const prj = useMemo(() => game, []);
 
   return (
     <div>

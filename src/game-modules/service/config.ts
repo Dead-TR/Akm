@@ -1,4 +1,4 @@
-import ExampleScene from "./scenes/exampleScene";
+import DefaultScene from "./scenes/DefaultScene";
 
 const groundSpriteSize = 32;
 const minGroundNumber = 15;
@@ -9,7 +9,7 @@ export const config = {
   parent: "game-box",
   width: size,
   height: size,
-  scene: [ExampleScene],
+  scene: [DefaultScene],
   backgroundColor: 0x14003b,
   // transparent: true
   physics: {
