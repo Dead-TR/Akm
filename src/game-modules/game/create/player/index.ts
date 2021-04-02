@@ -43,28 +43,23 @@ export default class CreatePlayer extends CreateCharacter {
     const side = super.move(coordinateX, coordinateY, 100, 5);
 
     const [xSide, ySide] = side;
-    // side.forEach((value) => {
-    //   if (value === "stop") {
-    //     this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
-    //   } else {
-    //     if (this.actor.anims.currentAnim?.key !== Animation[value]) {
-    //       this.actor.anims.play(Animation[value]);
-    //     }
-    //   }
-    // });
 
-    if (xSide === "left") {
-      if (this.actor.anims.currentAnim?.key !== Animation[xSide])
+    if (xSide !== "stop") {
+      if (this.actor.anims.isPaused) {
+        this.actor.anims.play(this.actor.anims.currentAnim);
+      }
+
+      if (this.actor.anims.currentAnim?.key !== Animation[xSide]) {
         this.actor.anims.play(Animation[xSide]);
-    } else if (xSide === "right") {
-      if (this.actor.anims.currentAnim?.key !== Animation[xSide])
-        this.actor.anims.play(Animation[xSide]);
-    } else if (ySide === "top") {
-      if (this.actor.anims.currentAnim?.key !== Animation[ySide])
+      }
+    } else if (ySide !== "stop") {
+      if (this.actor.anims.isPaused) {
+        this.actor.anims.play(this.actor.anims.currentAnim);
+      }
+
+      if (this.actor.anims.currentAnim?.key !== Animation[ySide]) {
         this.actor.anims.play(Animation[ySide]);
-    } else if (ySide === "bottom") {
-      if (this.actor.anims.currentAnim?.key !== Animation[ySide])
-        this.actor.anims.play(Animation[ySide]);
+      }
     } else {
       this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
     }

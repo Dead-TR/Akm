@@ -38,6 +38,5 @@ export default class DefaultScene extends Scene {
   }
   update() {
     this.player.move();
-    // console.log(this.input.x);
   }
 }
