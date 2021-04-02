@@ -4,6 +4,7 @@ import { CreateGameTypes, LoadGameTypes } from "./types";
 import { createPlayer } from "./create/player";
 import createAnimation from "./create/animation";
 import DefaultScene from "../service/scenes/DefaultScene";
+import createCursor from "./create/UI/cursor";
 
 export default class Game {
   scene: DefaultScene;
@@ -16,6 +17,10 @@ export default class Game {
       world: createWorld.bind(this.scene),
       player: createPlayer.bind(this.scene),
       animation: createAnimation.bind(this.scene),
+
+      ui: {
+        cursor: createCursor.bind(this.scene),
+      },
     };
     this.load = {
       preload: preloadData.bind(this.scene),

@@ -6,6 +6,9 @@ export interface PreloadTypes {
   data: any[];
 }
 
+export interface UI {
+  cursor: () => void;
+}
 export interface CreateGameTypes {
   world: (
     showWorld: boolean,
@@ -20,6 +23,7 @@ export interface CreateGameTypes {
     textureFrame: string | number | undefined
   ) => CreatePlayer;
   animation: (config: AnimationConfig[]) => void;
+  ui: UI;
 }
 
 export interface LoadGameTypes {
