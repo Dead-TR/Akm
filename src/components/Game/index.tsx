@@ -1,9 +1,19 @@
-import React, { useMemo } from "react";
-import { game } from "../../game-modules";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { renderGame } from "../../game-modules";
 import css from "./style.module.scss";
 
 export const Game = () => {
-  const prj = useMemo(() => game, []);
+  const [game, setGame] = useState<Phaser.Game>();
+
+  useLayoutEffect(() => {
+    setGame(renderGame());
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      game?.destroy(true, true);
+    };
+  }, []);
 
   return (
     <div>

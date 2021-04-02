@@ -35,7 +35,7 @@ const data: PreloadTypes[] = [
       [
         "playerUp",
         `${playerData.path}p_up.png`,
-        { ...playerData.frame, frameHeight: 44 },
+        { ...playerData.frame, frameHeight: 44, frameWidth: 19 },
       ],
     ],
   },
