@@ -11,10 +11,15 @@ export default class CreateCharacter {
     x: number,
     y: number,
     spriteSheet: string,
-    textureFrame: string | number | undefined
+    textureFrame: string | number | undefined,
+    origin?: number[]
   ) {
     this.scene = scene;
     this.actor = scene.physics.add.sprite(x, y, spriteSheet, textureFrame);
+
+    if (origin) {
+      this.actor.setOrigin(...origin);
+    }
   }
 
   addAnimation(configs: AnimationConfig[]) {

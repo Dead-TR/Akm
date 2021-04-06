@@ -35,7 +35,7 @@ export default class DefaultScene extends Scene {
     this.world.addSimpleObjects(objects);
     this.state.cursor = this.engine.create.ui.cursor(100, 100, 1, 25, 0xffffff);
 
-    this.player = this.engine.create.player(64, 64, "playerUp", 1);
+    this.player = this.engine.create.player(64, 64, "playerUp", 1, [0.5, 0.8]);
     this.player.addAnimation(playerAnims);
     this.player.check();
 

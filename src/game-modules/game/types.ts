@@ -32,7 +32,8 @@ export interface CreateGameTypes {
     x: number,
     y: number,
     spriteSheet: string,
-    textureFrame: string | number | undefined
+    textureFrame: string | number | undefined,
+    origin?: number[]
   ) => CreatePlayer;
   animation: (config: AnimationConfig[]) => void;
   ui: UI;

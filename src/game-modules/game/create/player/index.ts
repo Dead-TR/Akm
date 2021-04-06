@@ -6,9 +6,10 @@ export function createPlayer(
   x: number,
   y: number,
   spriteSheet: string,
-  textureFrame: string | number | undefined
+  textureFrame: string | number | undefined,
+  origin?: number[]
 ) {
-  return new CreatePlayer(this, x, y, spriteSheet, textureFrame);
+  return new CreatePlayer(this, x, y, spriteSheet, textureFrame, origin);
 }
 
 enum Animation {
@@ -26,9 +27,10 @@ export default class CreatePlayer extends CreateCharacter {
     x: number,
     y: number,
     spriteSheet: string,
-    textureFrame: string | number | undefined
+    textureFrame: string | number | undefined,
+    origin?: number[]
   ) {
-    super(scene, x, y, spriteSheet, textureFrame);
+    super(scene, x, y, spriteSheet, textureFrame, origin);
 
     this.scene = scene;
   }
