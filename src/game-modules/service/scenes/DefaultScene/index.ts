@@ -12,9 +12,14 @@ export default class DefaultScene extends Scene {
   player: CreatePlayer;
   world: World;
 
+  state: {
+    cursor?: Phaser.GameObjects.Arc;
+  };
+
   constructor(config: string) {
     super(config);
     this.engine = new Game(this);
+    this.state = {};
   }
 
   preload() {
@@ -28,15 +33,15 @@ export default class DefaultScene extends Scene {
       32
     );
     this.world.addSimpleObjects(objects);
+    this.state.cursor = this.engine.create.ui.cursor(100, 100, 1, 25, 0xffffff);
+
     this.player = this.engine.create.player(64, 64, "playerUp", 1);
     this.player.addAnimation(playerAnims);
     this.player.check();
 
-    this.engine.addListeners("pointerup", () => {
-      cursorMove(this.world.objects["cursor"], this.input.x, this.input.y);
-    });
+    this.engine.addListeners("pointerup", () => {});
   }
   update() {
-    this.player.move();
+    this.player.move(this.state.cursor);
   }
 }

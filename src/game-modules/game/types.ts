@@ -6,8 +6,20 @@ export interface PreloadTypes {
   data: any[];
 }
 
+export interface CursorBorderType {
+  color: number;
+  size: number;
+}
 export interface UI {
-  cursor: () => void;
+  cursor: (
+    x: number,
+    y: number,
+    size: number,
+    scale: number,
+    background: number,
+
+    border?: CursorBorderType | undefined
+  ) => Phaser.GameObjects.Arc;
 }
 export interface CreateGameTypes {
   world: (

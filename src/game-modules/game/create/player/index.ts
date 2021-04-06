@@ -36,9 +36,9 @@ export default class CreatePlayer extends CreateCharacter {
     console.log("actor: ", this);
   }
 
-  move() {
-    const coordinateX = this.scene.world.objects["cursor"].x;
-    const coordinateY = this.scene.world.objects["cursor"].y;
+  move(cursor: any) {
+    const coordinateX = cursor.x;
+    const coordinateY = cursor.y;
 
     const side = super.move(coordinateX, coordinateY, 100, 5);
 

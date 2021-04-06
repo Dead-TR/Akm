@@ -1,25 +1,37 @@
 import { Scene } from "phaser";
-
-interface BorderType {
-  color: number;
-  size: number;
-}
+import { CursorBorderType } from "../../../types";
 
 export default function createCursor(
   this: Scene,
+  x: number,
+  y: number,
   size: number,
+  scale: number,
   background: number,
-  border?: BorderType
+  border?: CursorBorderType
 ) {
-  const centerX = Number(this.game.config.width) / 2;
-  const centerY = Number(this.game.config.height) / 2;
-
-  const circle = this.add.circle(centerX, centerY, size, background);
+  const circle = this.add.circle(x, y, size, background);
 
   if (border) {
     const { color, size } = border;
     circle.setStrokeStyle(size, color);
   }
-}
 
-// https://labs.phaser.io/edit.html?src=src/game%20objects/shapes/circle.js&v=3.54.0
+  const tween = this.tweens.add({
+    delay: 0.1,
+    targets: circle,
+    scale: scale,
+    yoyo: false,
+    repeat: 0,
+    alpha: 0,
+    ease: "Sine.easeInOut",
+  });
+
+  this.input.on("pointerup", () => {
+    circle.x = this.input.x;
+    circle.y = this.input.y;
+    tween.restart();
+  });
+
+  return circle;
+}
