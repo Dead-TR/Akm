@@ -8,11 +8,6 @@ enum Animation {
   "bottom" = "playerGoDown",
 }
 
-interface MoveLayer {
-  layer: Phaser.Tilemaps.Tilemap;
-  stops: number[];
-}
-
 export function createPlayer(
   this: DefaultScene,
   x: number,
@@ -27,6 +22,9 @@ export function createPlayer(
 export default class CreatePlayer extends CreateCharacter {
   scene: DefaultScene;
 
+  isCollisionCreated = false;
+  collision: Phaser.Physics.Arcade.StaticGroup;
+
   constructor(
     scene: DefaultScene,
     x: number,
@@ -36,7 +34,7 @@ export default class CreatePlayer extends CreateCharacter {
     origin?: number[]
   ) {
     super(scene, x, y, spriteSheet, textureFrame, origin);
-
+    this.collision = scene.physics.add.staticGroup();
     this.scene = scene;
   }
   check() {
@@ -44,24 +42,15 @@ export default class CreatePlayer extends CreateCharacter {
   }
 
   //@ts-ignore
-  move(cursor: any, layer?: MoveLayer) {
+  move(cursor: any) {
     let coordinateX = cursor.x;
     let coordinateY = cursor.y;
+    let speed = 100;
+    let accuracy = 5;
 
-    if (layer) {
-      const tile = layer.layer.getTileAtWorldXY(
-        this.actor.x,
-        this.actor.y,
-        false
-      );
+    const side = super.move(coordinateX, coordinateY, speed, accuracy);
 
-      layer.stops.forEach((id) => {
-        if (id === tile.index) {
-          this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
-        }
-      });
-    }
-    const side = super.move(coordinateX, coordinateY, 100, 5);
+    // console.log(this.scene.world.world);
 
     const [xSide, ySide] = side;
 

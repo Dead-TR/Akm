@@ -5,7 +5,8 @@ export function creator(
   showWorld: boolean,
   gridName: string,
   imgName: string,
-  size: number
+  size: number,
+  collision?: number[]
 ) {
   const gridTileMap = this.make.tilemap({
     key: gridName,
@@ -17,12 +18,18 @@ export function creator(
     ? gridTileMap.addTilesetImage(imgName, undefined, size, size)
     : null;
 
-  // @ts-ignore: Unreachable code error
-  return gridTileMap.createStaticLayer(0, gridTileSet, 0, 0); //createStaticLayer exists but is not described
+  // @ts-ignore
+  const tileLayer = gridTileMap.createStaticLayer(0, gridTileSet, 0, 0); //createStaticLayer exists but is not described
+
+  if (collision) {
+    tileLayer.setCollisionByExclusion(collision);
+  }
+
+  return tileLayer;
 }
 
 export default class World {
-  world: Phaser.Tilemaps.Tilemap;
+  world: any;
   scene: Scene;
   objects: {
     [key: string]: Phaser.GameObjects.Image;
@@ -33,10 +40,18 @@ export default class World {
     showWorld: boolean,
     gridName: string,
     imgName: string,
-    size: number
+    size: number,
+    collision?: number[]
   ) {
     this.scene = scene;
-    this.world = creator.call(scene, showWorld, gridName, imgName, size);
+    this.world = creator.call(
+      scene,
+      showWorld,
+      gridName,
+      imgName,
+      size,
+      collision
+    );
     this.objects = {};
   }
 
@@ -57,7 +72,8 @@ export function createWorld(
   showWorld: boolean,
   gridName: string,
   imgName: string,
-  size: number
+  size: number,
+  collision?: number[]
 ) {
-  return new World(this, showWorld, gridName, imgName, size);
+  return new World(this, showWorld, gridName, imgName, size, collision);
 }

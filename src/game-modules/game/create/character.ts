@@ -27,6 +27,14 @@ export default class CreateCharacter {
   }
 
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
+    // this.actor.body
+
+    if (!this.actor.body.blocked.none) {
+      console.log("🚀 ~ ", this.actor.body);
+      this.actor.body.stop();
+      return ["stop", "stop"];
+    }
+
     const xSide =
       this.actor.x - x < -accuracy
         ? "right"

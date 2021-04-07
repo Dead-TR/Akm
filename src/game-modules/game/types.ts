@@ -10,6 +10,7 @@ export interface CursorBorderType {
   color: number;
   size: number;
 }
+
 export interface UI {
   cursor: (
     x: number,
@@ -26,7 +27,8 @@ export interface CreateGameTypes {
     showWorld: boolean,
     gridName: string,
     imgName: string,
-    size: number
+    size: number,
+    collisions?: number[]
   ) => World;
   player: (
     x: number,
@@ -39,8 +41,18 @@ export interface CreateGameTypes {
   ui: UI;
 }
 
+export type ColliderObject =
+  | Phaser.GameObjects.GameObject
+  | Phaser.GameObjects.GameObject[]
+  | Phaser.GameObjects.Group
+  | Phaser.GameObjects.Group[];
+
 export interface LoadGameTypes {
   preload: (data: PreloadTypes[]) => void;
+}
+
+export interface AddGameTypes {
+  collision: (el_1: ColliderObject, el_2: ColliderObject) => void;
 }
 
 interface Ways {

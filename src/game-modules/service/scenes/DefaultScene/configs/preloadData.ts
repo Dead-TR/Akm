@@ -16,6 +16,7 @@ const data: PreloadTypes[] = [
     data: [
       ["exampleGrassTile", "game/assets/img/DefaultScene/grass.png"],
       ["cursor", "game/assets/img/general/cursor.png"],
+      ["empty", "game/assets/img/general/emptyLayers.png"],
     ],
   },
   {

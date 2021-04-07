@@ -2,7 +2,6 @@ import { Scene } from "phaser";
 import Game from "../../../game";
 import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
-import cursorMove from "./callBacks/cursorMove";
 import { playerAnims } from "./configs/animations";
 import { objects } from "./configs/objects";
 import preloadData from "./configs/preloadData";
@@ -30,7 +29,8 @@ export default class DefaultScene extends Scene {
       true,
       "exampleGrid",
       "exampleGrassTile",
-      32
+      32,
+      [0]
     );
     this.world.addSimpleObjects(objects);
     this.state.cursor = this.engine.create.ui.cursor(100, 100, 1, 25, 0xffffff);
@@ -39,12 +39,11 @@ export default class DefaultScene extends Scene {
     this.player.addAnimation(playerAnims);
     this.player.check();
 
+    this.engine.add.collision(this.player.actor, this.world.world);
+
     this.engine.addListeners("pointerup", () => {});
   }
   update() {
-    this.player.move(this.state.cursor, {
-      layer: this.world.world,
-      stops: [0, 2, 3, 4, 5, 7, 8, 9, 10],
-    });
+    this.player.move(this.state.cursor);
   }
 }
