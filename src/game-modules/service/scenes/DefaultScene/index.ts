@@ -42,6 +42,9 @@ export default class DefaultScene extends Scene {
     this.engine.addListeners("pointerup", () => {});
   }
   update() {
-    this.player.move(this.state.cursor);
+    this.player.move(this.state.cursor, {
+      layer: this.world.world,
+      stops: [0, 2, 3, 4, 5, 7, 8, 9, 10],
+    });
   }
 }

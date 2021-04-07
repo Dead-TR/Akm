@@ -1,6 +1,18 @@
 import DefaultScene from "../../../service/scenes/DefaultScene";
 import CreateCharacter from "../character";
 
+enum Animation {
+  "left" = "playerGoLeft",
+  "right" = "playerGoRight",
+  "top" = "playerGoUp",
+  "bottom" = "playerGoDown",
+}
+
+interface MoveLayer {
+  layer: Phaser.Tilemaps.Tilemap;
+  stops: number[];
+}
+
 export function createPlayer(
   this: DefaultScene,
   x: number,
@@ -10,13 +22,6 @@ export function createPlayer(
   origin?: number[]
 ) {
   return new CreatePlayer(this, x, y, spriteSheet, textureFrame, origin);
-}
-
-enum Animation {
-  "left" = "playerGoLeft",
-  "right" = "playerGoRight",
-  "top" = "playerGoUp",
-  "bottom" = "playerGoDown",
 }
 
 export default class CreatePlayer extends CreateCharacter {
@@ -38,10 +43,24 @@ export default class CreatePlayer extends CreateCharacter {
     console.log("actor: ", this);
   }
 
-  move(cursor: any) {
-    const coordinateX = cursor.x;
-    const coordinateY = cursor.y;
+  //@ts-ignore
+  move(cursor: any, layer?: MoveLayer) {
+    let coordinateX = cursor.x;
+    let coordinateY = cursor.y;
 
+    if (layer) {
+      const tile = layer.layer.getTileAtWorldXY(
+        this.actor.x,
+        this.actor.y,
+        false
+      );
+
+      layer.stops.forEach((id) => {
+        if (id === tile.index) {
+          this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
+        }
+      });
+    }
     const side = super.move(coordinateX, coordinateY, 100, 5);
 
     const [xSide, ySide] = side;
