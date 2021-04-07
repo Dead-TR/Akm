@@ -27,7 +27,7 @@ export default function createCursor(
     ease: "Sine.easeInOut",
   });
 
-  this.input.on("pointerup", () => {
+  this.input.on("pointerdown", () => {
     circle.x = this.input.x;
     circle.y = this.input.y;
     tween.restart();
