@@ -2,9 +2,30 @@ import { Scene } from "phaser";
 import { AnimationConfig, Sides } from "../types";
 import createAnimation from "./animation";
 
+const stops = [0, 2, 3, 4, 5, 7, 8, 9, 10];
+
 export default class CreateCharacter {
   actor;
   scene: Scene;
+
+  collision = {
+    top: {
+      calc: -5,
+      blocked: false,
+    },
+    bottom: {
+      calc: 5,
+      blocked: false,
+    },
+    left: {
+      calc: -5,
+      blocked: false,
+    },
+    right: {
+      calc: 5,
+      blocked: false,
+    },
+  };
 
   constructor(
     scene: Scene,
@@ -24,6 +45,20 @@ export default class CreateCharacter {
 
   addAnimation(configs: AnimationConfig[]) {
     createAnimation.call(this.scene, configs);
+  }
+
+  checkCollision(x: number, y: number, world: any) {
+    for (const [key, value] of Object.entries(this.collision)) {
+      const id = stops.indexOf(
+        world.getTileAtWorldXY(x + value.calc, y, false)?.index
+      );
+
+      if (!id || id !== -1) {
+        value.blocked = true;
+      } else {
+        value.blocked = false;
+      }
+    }
   }
 
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {

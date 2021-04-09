@@ -39,7 +39,7 @@ export default class DefaultScene extends Scene {
     this.player.addAnimation(playerAnims);
     this.player.check();
 
-    this.engine.add.collision(this.player.actor, this.world.world);
+    // this.engine.add.collision(this.player.actor, this.world.world);
 
     this.engine.addListeners("pointerup", () => {});
   }

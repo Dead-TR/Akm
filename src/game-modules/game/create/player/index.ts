@@ -23,7 +23,6 @@ export default class CreatePlayer extends CreateCharacter {
   scene: DefaultScene;
 
   isCollisionCreated = false;
-  collision: Phaser.Physics.Arcade.StaticGroup;
 
   constructor(
     scene: DefaultScene,
@@ -34,7 +33,6 @@ export default class CreatePlayer extends CreateCharacter {
     origin?: number[]
   ) {
     super(scene, x, y, spriteSheet, textureFrame, origin);
-    this.collision = scene.physics.add.staticGroup();
     this.scene = scene;
   }
   check() {
@@ -43,14 +41,46 @@ export default class CreatePlayer extends CreateCharacter {
 
   //@ts-ignore
   move(cursor: any) {
-    let coordinateX = cursor.x;
-    let coordinateY = cursor.y;
     let speed = 100;
     let accuracy = 5;
 
-    const side = super.move(coordinateX, coordinateY, speed, accuracy);
+    this.checkCollision(this.actor.x, this.actor.y, this.scene.world.world);
+    const directionX = cursor.x - this.actor.x; // +right -left
+    const directionY = cursor.y - this.actor.y; // +top -bottom
 
-    // console.log(this.scene.world.world);
+    let coordinateX = cursor.x;
+    let coordinateY = cursor.y;
+
+    if (this.collision.right.blocked) {
+      console.log("🚀 ~ ~ this.collision.right", this.collision.right);
+
+      if (directionX > 0) {
+        coordinateX = this.actor.x;
+      }
+    } else if (this.collision.left.blocked) {
+      console.log("🚀 ~ ~ this.collision.left", this.collision.left);
+
+      if (directionX < 0) {
+        coordinateX = this.actor.x;
+      }
+    }
+
+    if (this.collision.top.blocked) {
+      console.log("🚀 ~ ~ this.collision.top)", this.collision.top);
+
+      if (directionY < 0) {
+        coordinateY = this.actor.y;
+      }
+    } else if (this.collision.bottom.blocked) {
+      console.log("🚀 ~ ~ this.collision.bottom)", this.collision.bottom);
+
+      if (directionY > 0) {
+        coordinateY = this.actor.y;
+      }
+    }
+    // console.log(this.collision.right.blocked);
+
+    const side = super.move(coordinateX, coordinateY, speed, accuracy);
 
     const [xSide, ySide] = side;
 
