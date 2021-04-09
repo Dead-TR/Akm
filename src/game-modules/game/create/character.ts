@@ -10,19 +10,19 @@ export default class CreateCharacter {
 
   collision = {
     top: {
-      calc: -5,
+      calc: -15,
       blocked: false,
     },
     bottom: {
-      calc: 5,
+      calc: 15,
       blocked: false,
     },
     left: {
-      calc: -5,
+      calc: -15,
       blocked: false,
     },
     right: {
-      calc: 5,
+      calc: 15,
       blocked: false,
     },
   };
@@ -49,8 +49,14 @@ export default class CreateCharacter {
 
   checkCollision(x: number, y: number, world: any) {
     for (const [key, value] of Object.entries(this.collision)) {
+      const valueLine = key === "top" || key === "bottom" ? "y" : "x";
+
       const id = stops.indexOf(
-        world.getTileAtWorldXY(x + value.calc, y, false)?.index
+        world.getTileAtWorldXY(
+          valueLine === "x" ? x + value.calc : x,
+          valueLine === "y" ? y + value.calc : y,
+          false
+        )?.index
       );
 
       if (!id || id !== -1) {
@@ -62,14 +68,6 @@ export default class CreateCharacter {
   }
 
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
-    // this.actor.body
-
-    if (!this.actor.body.blocked.none) {
-      console.log("🚀 ~ ", this.actor.body);
-      this.actor.body.stop();
-      return ["stop", "stop"];
-    }
-
     const xSide =
       this.actor.x - x < -accuracy
         ? "right"
