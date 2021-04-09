@@ -2,8 +2,6 @@ import { Scene } from "phaser";
 import { AnimationConfig, Sides } from "../types";
 import createAnimation from "./animation";
 
-const stops = [0, 2, 3, 4, 5, 7, 8, 9, 10];
-
 export default class CreateCharacter {
   actor;
   scene: Scene;
@@ -47,11 +45,11 @@ export default class CreateCharacter {
     createAnimation.call(this.scene, configs);
   }
 
-  checkCollision(x: number, y: number, world: any) {
+  checkCollision(x: number, y: number, world: any, collision: number[]) {
     for (const [key, value] of Object.entries(this.collision)) {
       const valueLine = key === "top" || key === "bottom" ? "y" : "x";
 
-      const id = stops.indexOf(
+      const id = collision.indexOf(
         world.getTileAtWorldXY(
           valueLine === "x" ? x + value.calc : x,
           valueLine === "y" ? y + value.calc : y,

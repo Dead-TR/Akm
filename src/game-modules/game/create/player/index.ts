@@ -40,11 +40,11 @@ export default class CreatePlayer extends CreateCharacter {
   }
 
   //@ts-ignore
-  move(cursor: any) {
+  move(cursor: any, world: any, collision: number[]) {
     let speed = 100;
     let accuracy = 5;
 
-    this.checkCollision(this.actor.x, this.actor.y, this.scene.world.world);
+    this.checkCollision(this.actor.x, this.actor.y, world, collision);
     const directionX = cursor.x - this.actor.x; // +right -left
     const directionY = cursor.y - this.actor.y; // -top +bottom
 

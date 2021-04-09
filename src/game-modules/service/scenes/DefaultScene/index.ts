@@ -3,6 +3,7 @@ import Game from "../../../game";
 import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
 import { playerAnims } from "./configs/animations";
+import { collisionCellIds } from "./configs/config";
 import { objects } from "./configs/objects";
 import preloadData from "./configs/preloadData";
 
@@ -44,6 +45,6 @@ export default class DefaultScene extends Scene {
     this.engine.addListeners("pointerup", () => {});
   }
   update() {
-    this.player.move(this.state.cursor);
+    this.player.move(this.state.cursor, this.world.world, collisionCellIds);
   }
 }
