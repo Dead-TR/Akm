@@ -19,7 +19,8 @@ export interface UI {
     scale: number,
     background: number,
 
-    border?: CursorBorderType | undefined
+    border?: CursorBorderType | undefined | null,
+    camera?: Phaser.Cameras.Scene2D.Camera
   ) => Phaser.GameObjects.Arc;
 }
 export interface CreateGameTypes {
@@ -38,6 +39,11 @@ export interface CreateGameTypes {
     origin?: number[]
   ) => CreatePlayer;
   animation: (config: AnimationConfig[]) => void;
+  camera: (
+    actor: Phaser.GameObjects.GameObject | Object,
+    world: any
+  ) => Phaser.Cameras.Scene2D.Camera;
+
   ui: UI;
 }
 

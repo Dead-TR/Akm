@@ -1,12 +1,12 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { renderGame } from "../../game-modules";
 import css from "./style.module.scss";
 
-export const Game = () => {
-  const [game, setGame] = useState<Phaser.Game>();
+let game: Phaser.Game | null = null;
 
+export const Game = () => {
   useLayoutEffect(() => {
-    setGame(renderGame());
+    game = renderGame();
   }, []);
 
   useEffect(() => {

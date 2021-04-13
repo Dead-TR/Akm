@@ -3,6 +3,7 @@ import { preloadData } from "./load/preload";
 import { AddGameTypes, CreateGameTypes, LoadGameTypes } from "./types";
 import { createPlayer } from "./create/player";
 import createAnimation from "./create/animation";
+import createCamera from "./create/camera";
 import DefaultScene from "../service/scenes/DefaultScene";
 import createCursor from "./create/UI/cursor";
 import addCollision from "./add/collision";
@@ -19,6 +20,7 @@ export default class Game {
       world: createWorld.bind(this.scene),
       player: createPlayer.bind(this.scene),
       animation: createAnimation.bind(this.scene),
+      camera: createCamera.bind(this.scene),
 
       ui: {
         cursor: createCursor.bind(this.scene),

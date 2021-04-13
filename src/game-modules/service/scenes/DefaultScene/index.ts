@@ -14,6 +14,7 @@ export default class DefaultScene extends Scene {
 
   state: {
     cursor?: Phaser.GameObjects.Arc;
+    camera?: Phaser.Cameras.Scene2D.Camera;
   };
 
   constructor(config: string) {
@@ -34,13 +35,25 @@ export default class DefaultScene extends Scene {
       [0]
     );
     this.world.addSimpleObjects(objects);
-    this.state.cursor = this.engine.create.ui.cursor(100, 100, 1, 25, 0xffffff);
 
     this.player = this.engine.create.player(64, 64, "playerUp", 1, [0.5, 0.8]);
     this.player.addAnimation(playerAnims);
     this.player.check();
 
-    // this.engine.add.collision(this.player.actor, this.world.world);
+    this.state.camera = this.engine.create.camera(
+      this.player.actor,
+      this.world.world
+    );
+
+    this.state.cursor = this.engine.create.ui.cursor(
+      100,
+      100,
+      1,
+      25,
+      0xffffff,
+      null,
+      this.state.camera
+    );
 
     this.engine.addListeners("pointerup", () => {});
   }

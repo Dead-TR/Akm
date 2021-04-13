@@ -8,7 +8,8 @@ export default function createCursor(
   size: number,
   scale: number,
   background: number,
-  border?: CursorBorderType
+  border?: CursorBorderType | null,
+  camera?: Phaser.Cameras.Scene2D.Camera
 ) {
   const circle = this.add.circle(x, y, size, background);
 
@@ -28,8 +29,16 @@ export default function createCursor(
   });
 
   this.input.on("pointerdown", () => {
-    circle.x = this.input.x;
-    circle.y = this.input.y;
+    let fehlerX = 0,
+      fehlerY = 0;
+
+    if (camera) {
+      fehlerX = camera.scrollX;
+      fehlerY = camera.scrollY;
+    }
+
+    circle.x = this.input.x + fehlerX;
+    circle.y = this.input.y + fehlerY;
     tween.restart();
   });
 
