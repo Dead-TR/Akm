@@ -5,8 +5,7 @@ export function creator(
   showWorld: boolean,
   gridName: string,
   imgName: string,
-  size: number,
-  collision?: number[]
+  size: number
 ) {
   const gridTileMap = this.make.tilemap({
     key: gridName,
@@ -20,10 +19,6 @@ export function creator(
 
   // @ts-ignore
   const tileLayer = gridTileMap.createStaticLayer(0, gridTileSet, 0, 0); //createStaticLayer exists but is not described
-
-  if (collision) {
-    tileLayer.setCollisionByExclusion(collision);
-  }
 
   return tileLayer;
 }
@@ -40,18 +35,10 @@ export default class World {
     showWorld: boolean,
     gridName: string,
     imgName: string,
-    size: number,
-    collision?: number[]
+    size: number
   ) {
     this.scene = scene;
-    this.world = creator.call(
-      scene,
-      showWorld,
-      gridName,
-      imgName,
-      size,
-      collision
-    );
+    this.world = creator.call(scene, showWorld, gridName, imgName, size);
     this.objects = {};
   }
 
@@ -61,10 +48,6 @@ export default class World {
       this.objects[name] = this.scene.add.image(x, y, imgName);
     });
   }
-
-  show() {
-    console.log("🚀 ~> ", this);
-  }
 }
 
 export function createWorld(
@@ -72,8 +55,7 @@ export function createWorld(
   showWorld: boolean,
   gridName: string,
   imgName: string,
-  size: number,
-  collision?: number[]
+  size: number
 ) {
-  return new World(this, showWorld, gridName, imgName, size, collision);
+  return new World(this, showWorld, gridName, imgName, size);
 }

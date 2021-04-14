@@ -28,8 +28,7 @@ export interface CreateGameTypes {
     showWorld: boolean,
     gridName: string,
     imgName: string,
-    size: number,
-    collisions?: number[]
+    size: number
   ) => World;
   player: (
     x: number,
@@ -55,10 +54,6 @@ export type ColliderObject =
 
 export interface LoadGameTypes {
   preload: (data: PreloadTypes[]) => void;
-}
-
-export interface AddGameTypes {
-  collision: (el_1: ColliderObject, el_2: ColliderObject) => void;
 }
 
 interface Ways {

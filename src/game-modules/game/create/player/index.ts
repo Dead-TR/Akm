@@ -35,9 +35,6 @@ export default class CreatePlayer extends CreateCharacter {
     super(scene, x, y, spriteSheet, textureFrame, origin);
     this.scene = scene;
   }
-  check() {
-    console.log("actor: ", this);
-  }
 
   //@ts-ignore
   move(cursor: any, world: any, collision: number[]) {

@@ -31,14 +31,12 @@ export default class DefaultScene extends Scene {
       true,
       "exampleGrid",
       "exampleGrassTile",
-      32,
-      [0]
+      32
     );
     this.world.addSimpleObjects(objects);
 
     this.player = this.engine.create.player(64, 64, "playerUp", 1, [0.5, 0.8]);
     this.player.addAnimation(playerAnims);
-    this.player.check();
 
     this.state.camera = this.engine.create.camera(
       this.player.actor,

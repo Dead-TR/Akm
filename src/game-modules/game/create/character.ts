@@ -49,13 +49,13 @@ export default class CreateCharacter {
     for (const [key, value] of Object.entries(this.collision)) {
       const valueLine = key === "top" || key === "bottom" ? "y" : "x";
 
-      const id = collision.indexOf(
-        world.getTileAtWorldXY(
-          valueLine === "x" ? x + value.calc : x,
-          valueLine === "y" ? y + value.calc : y,
-          false
-        )?.index
-      );
+      const worldIndex = world.getTileAtWorldXY(
+        valueLine === "x" ? x + value.calc : x,
+        valueLine === "y" ? y + value.calc : y,
+        false
+      )?.index;
+
+      const id = collision.indexOf(worldIndex ? worldIndex : 0);
 
       if (!id || id !== -1) {
         value.blocked = true;
