@@ -1,11 +1,7 @@
-import { createWorld } from "./create/world";
+import { createAnimation, createCamera, createCursor, createPlayer, createWorld } from "./create";
 import { preloadData } from "./load/preload";
 import { CreateGameTypes, LoadGameTypes } from "./types";
-import { createPlayer } from "./create/player";
-import createAnimation from "./create/animation";
-import createCamera from "./create/camera";
 import DefaultScene from "../service/scenes/DefaultScene";
-import createCursor from "./create/UI/cursor";
 
 export default class Game {
   scene: DefaultScene;
