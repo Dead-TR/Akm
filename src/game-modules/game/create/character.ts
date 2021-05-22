@@ -65,6 +65,37 @@ export default class CreateCharacter {
     }
   }
 
+  createCollision(params: {
+    direction: {
+      x: number;
+      y: number;
+    };
+    coordinates: {
+      x: number;
+      y: number;
+    };
+  }) {
+    if (this.collision.right.blocked) {
+      if (params.direction.x > 0) {
+        params.coordinates.x = this.actor.x;
+      }
+    } else if (this.collision.left.blocked) {
+      if (params.direction.x < 0) {
+        params.coordinates.x = this.actor.x;
+      }
+    }
+
+    if (this.collision.bottom.blocked) {
+      if (params.direction.y > 0) {
+        params.coordinates.y = this.actor.y;
+      }
+    } else if (this.collision.top.blocked) {
+      if (params.direction.y < 0) {
+        params.coordinates.y = this.actor.y;
+      }
+    }
+  }
+
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
     const xSide =
       this.actor.x - x < -accuracy

@@ -1,17 +1,21 @@
-import { CreateEnemy, CreatePlayer, World } from './create'
+import {
+  AnimationProvider,
+  AnimationsListType,
+} from "../service/scenes/DefaultScene/configs/types";
+import { CreateCharacter, CreateEnemy, CreatePlayer, World } from "./create";
 
 export interface PreloadTypes {
-  method: string
-  data: any[]
+  method: string;
+  data: any[];
 }
 
 export interface CursorBorderType {
-  color: number
-  size: number
+  color: number;
+  size: number;
 }
 
 export interface EnemyListType {
-  [name: string]: CreateEnemy
+  [name: string]: CreateEnemy;
 }
 
 export interface UI {
@@ -24,7 +28,7 @@ export interface UI {
 
     border?: CursorBorderType | undefined | null,
     camera?: Phaser.Cameras.Scene2D.Camera
-  ) => Phaser.GameObjects.Arc
+  ) => Phaser.GameObjects.Arc;
 }
 export interface CreateGameTypes {
   world: (
@@ -32,59 +36,64 @@ export interface CreateGameTypes {
     gridName: string,
     imgName: string,
     size: number
-  ) => World
+  ) => World;
   player: (
     x: number,
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
     origin?: number[]
-  ) => CreatePlayer
+  ) => CreatePlayer;
   enemy: (
     x: number,
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    origin?: number[]
-  ) => CreateEnemy
-  animation: (config: AnimationConfig[]) => void
+    animations: AnimationsListType,
+    params?: {
+      origin?: number[];
+      vision?: number;
+      speed?: number;
+    }
+  ) => CreateEnemy;
+  animation: (config: AnimationConfig[]) => void;
   camera: (
     actor: Phaser.GameObjects.GameObject | Object,
     world: any
-  ) => Phaser.Cameras.Scene2D.Camera
+  ) => Phaser.Cameras.Scene2D.Camera;
 
-  ui: UI
+  ui: UI;
 }
 
 export type ColliderObject =
   | Phaser.GameObjects.GameObject
   | Phaser.GameObjects.GameObject[]
   | Phaser.GameObjects.Group
-  | Phaser.GameObjects.Group[]
+  | Phaser.GameObjects.Group[];
 
 export interface LoadGameTypes {
-  preload: (data: PreloadTypes[]) => void
+  preload: (data: PreloadTypes[]) => void;
 }
 
 interface Ways {
-  start: number
-  end: number
+  start: number;
+  end: number;
 }
 export interface AnimationConfig {
-  key: string
+  key: string;
   frame: {
-    name: string
-    ways: Ways
-    frameRate: number
-    repeat: number
-  }
+    name: string;
+    ways: Ways;
+    frameRate: number;
+    repeat: number;
+  };
 }
 
 export interface SimpleObject {
-  x: number
-  y: number
-  imgName: string
-  name: string
+  x: number;
+  y: number;
+  imgName: string;
+  name: string;
 }
 
-export type Sides = 'top' | 'bottom' | 'left' | 'right' | 'stop'
+export type Sides = "top" | "bottom" | "left" | "right" | "stop";

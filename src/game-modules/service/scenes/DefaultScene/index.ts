@@ -5,7 +5,9 @@ import World from '../../../game/create/world'
 import { EnemyListType } from '../../../game/types'
 import { playerAnims } from './configs/animations'
 import { collisionCellIds } from './configs/config'
-import enemy from './configs/enemy'
+import enemyCreator, {
+  movementWatching as enemyMovement,
+} from './configs/enemy'
 import { objects } from './configs/objects'
 import preloadData from './configs/preloadData'
 
@@ -40,7 +42,7 @@ export default class DefaultScene extends Scene {
 
     this.player = this.engine.create.player(64, 64, 'playerUp', 1, [0.5, 0.8])
     this.player.addAnimation(playerAnims)
-    enemy(this)
+    enemyCreator(this)
 
     this.state.camera = this.engine.create.camera(
       this.player.actor,
@@ -61,5 +63,7 @@ export default class DefaultScene extends Scene {
   }
   update() {
     this.player.move(this.state.cursor, this.world.world, collisionCellIds)
+
+    enemyMovement(this)
   }
 }

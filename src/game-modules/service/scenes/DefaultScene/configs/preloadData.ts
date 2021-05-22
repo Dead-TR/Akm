@@ -10,6 +10,16 @@ const playerData = {
   path: "game/assets/img/DefaultScene/characters/player/",
 };
 
+const zombieData = {
+  frame: {
+    frameWidth: 20,
+    frameHeight: 45,
+    startFrame: 0,
+    endFrame: 3,
+  },
+  path: "game/assets/img/DefaultScene/characters/enemies/zombie/",
+};
+
 const data: PreloadTypes[] = [
   {
     method: "image",
@@ -38,6 +48,19 @@ const data: PreloadTypes[] = [
         `${playerData.path}p_up.png`,
         { ...playerData.frame, frameHeight: 44, frameWidth: 19 },
       ],
+
+      [
+        "zombieLeft",
+        `${zombieData.path}p_left.png`,
+        { ...zombieData.frame, frameHeight: 41, frameWidth: 22 },
+      ],
+      [
+        "zombieRight",
+        `${zombieData.path}p_right.png`,
+        { ...zombieData.frame, frameHeight: 41, frameWidth: 22 },
+      ],
+      ["zombieUp", `${zombieData.path}p_up.png`, zombieData.frame],
+      ["zombieDown", `${zombieData.path}p_down.png`, zombieData.frame],
     ],
   },
 ];

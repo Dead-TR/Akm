@@ -1,15 +1,30 @@
-import DefaultScene from '..'
-import { enemyList } from './config'
+import DefaultScene from "..";
+import { collisionCellIds, enemyList } from "./config";
 
-export default function enemy(scene: DefaultScene) {
+export default function create(scene: DefaultScene) {
   enemyList.forEach((unit) => {
-    const { name, config } = unit
+    const { name, config, animations } = unit;
     scene.enemy[name] = scene.engine.create.enemy(
       config.x,
       config.y,
       config.spriteSheet,
       config.textureFrame,
-      config.origin
-    )
-  })
+      animations.movement.names,
+      {
+        origin: config.origin,
+        vision: 50,
+        speed: 100,
+      }
+    );
+
+    if (animations.movement?.list) {
+      scene.enemy[name].addAnimation(animations.movement.list);
+    }
+  });
+}
+
+export function movementWatching(scene: DefaultScene) {
+  for (const [name, character] of Object.entries(scene.enemy)) {
+    character.watching([scene.player.actor], collisionCellIds);
+  }
 }

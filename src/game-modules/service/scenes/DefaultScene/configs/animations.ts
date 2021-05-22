@@ -1,6 +1,6 @@
 import { AnimationConfig } from "../../../../game/types";
 
-const playerGoFrames = {
+const goingAnimationFrames = {
   ways: {
     start: 0,
     end: 3,
@@ -13,29 +13,60 @@ export const playerAnims: AnimationConfig[] = [
   {
     key: "playerGoUp",
     frame: {
-      ...playerGoFrames,
+      ...goingAnimationFrames,
       name: "playerUp",
     },
   },
   {
     key: "playerGoDown",
     frame: {
-      ...playerGoFrames,
+      ...goingAnimationFrames,
       name: "playerDown",
     },
   },
   {
     key: "playerGoLeft",
     frame: {
-      ...playerGoFrames,
+      ...goingAnimationFrames,
       name: "playerLeft",
     },
   },
   {
     key: "playerGoRight",
     frame: {
-      ...playerGoFrames,
+      ...goingAnimationFrames,
       name: "playerRight",
+    },
+  },
+];
+
+export const zombieAnimation: AnimationConfig[] = [
+  {
+    key: "zombieU",
+    frame: {
+      ...goingAnimationFrames,
+      name: "zombieUp",
+    },
+  },
+  {
+    key: "zombieD",
+    frame: {
+      ...goingAnimationFrames,
+      name: "zombieDown",
+    },
+  },
+  {
+    key: "zombieL",
+    frame: {
+      ...goingAnimationFrames,
+      name: "zombieLeft",
+    },
+  },
+  {
+    key: "zombieR",
+    frame: {
+      ...goingAnimationFrames,
+      name: "zombieRight",
     },
   },
 ];
