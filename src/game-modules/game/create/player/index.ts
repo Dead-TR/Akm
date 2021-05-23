@@ -60,26 +60,7 @@ export default class CreatePlayer extends CreateCharacter {
       accuracy
     );
 
-    const [xSide, ySide] = side;
-    if (xSide !== "stop") {
-      if (this.actor.anims.isPaused) {
-        this.actor.anims.play(this.actor.anims.currentAnim);
-      }
-
-      if (this.actor.anims.currentAnim?.key !== Animation[xSide]) {
-        this.actor.anims.play(Animation[xSide]);
-      }
-    } else if (ySide !== "stop") {
-      if (this.actor.anims.isPaused) {
-        this.actor.anims.play(this.actor.anims.currentAnim);
-      }
-
-      if (this.actor.anims.currentAnim?.key !== Animation[ySide]) {
-        this.actor.anims.play(Animation[ySide]);
-      }
-    } else {
-      this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
-    }
+    this.movementAnimation(side, Animation);
 
     return side;
   }

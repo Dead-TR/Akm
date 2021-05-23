@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+import { AnimationsListType } from "../../service/scenes/DefaultScene/configs/types";
 import { AnimationConfig, Sides } from "../types";
 import createAnimation from "./animation";
 
@@ -123,5 +124,29 @@ export default class CreateCharacter {
     }
 
     return [xSide, ySide];
+  }
+
+  movementAnimation(side: Sides[], movement: AnimationsListType) {
+    const [xSide, ySide] = side;
+
+    if (xSide !== "stop") {
+      if (this.actor.anims.isPaused) {
+        this.actor.anims.play(this.actor.anims.currentAnim);
+      }
+
+      if (this.actor.anims.currentAnim?.key !== movement[xSide]) {
+        this.actor.anims.play(movement[xSide]);
+      }
+    } else if (ySide !== "stop") {
+      if (this.actor.anims.isPaused) {
+        this.actor.anims.play(this.actor.anims.currentAnim);
+      }
+
+      if (this.actor.anims.currentAnim?.key !== movement[ySide]) {
+        this.actor.anims.play(movement[ySide]);
+      }
+    } else {
+      this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
+    }
   }
 }

@@ -77,7 +77,6 @@ export default class CreateEnemy extends CreateCharacter {
       });
     }
     if (target) {
-      // console.log(this.animations);
       const params = {
         direction: {
           x: target.x - this.actor.x,
@@ -105,28 +104,9 @@ export default class CreateEnemy extends CreateCharacter {
       );
 
       if (this.animations.movement) {
-        const [xSide, ySide] = side;
         const movement = this.animations.movement;
 
-        if (xSide !== "stop") {
-          if (this.actor.anims.isPaused) {
-            this.actor.anims.play(this.actor.anims.currentAnim);
-          }
-
-          if (this.actor.anims.currentAnim?.key !== movement[xSide]) {
-            this.actor.anims.play(movement[xSide]);
-          }
-        } else if (ySide !== "stop") {
-          if (this.actor.anims.isPaused) {
-            this.actor.anims.play(this.actor.anims.currentAnim);
-          }
-
-          if (this.actor.anims.currentAnim?.key !== movement[ySide]) {
-            this.actor.anims.play(movement[ySide]);
-          }
-        } else {
-          this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
-        }
+        this.movementAnimation(side, movement);
       }
     }
   }
