@@ -1,11 +1,8 @@
-import {
-  AnimationProvider,
-  AnimationsListType,
-} from "../service/scenes/DefaultScene/configs/types";
+import { AnimationsListType } from "../service/scenes/DefaultScene/configs/types";
 import { CreateCharacter, CreateEnemy, CreatePlayer, World } from "./create";
 
 export interface PreloadTypes {
-  method: string;
+  method: keyof Phaser.Loader.LoaderPlugin;
   data: any[];
 }
 
@@ -73,6 +70,7 @@ export type ColliderObject =
 
 export interface LoadGameTypes {
   preload: (data: PreloadTypes[]) => void;
+  animation: (config: AnimationConfig[]) => void;
 }
 
 interface Ways {

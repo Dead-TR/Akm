@@ -9,17 +9,13 @@ export default function create(scene: DefaultScene) {
       config.y,
       config.spriteSheet,
       config.textureFrame,
-      animations.movement.names,
+      animations.movement,
       {
         origin: config.origin,
         vision: 50,
         speed: 100,
       }
     );
-
-    if (animations.movement?.list) {
-      scene.enemy[name].addAnimation(animations.movement.list);
-    }
   });
 }
 

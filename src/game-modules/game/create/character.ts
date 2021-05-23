@@ -41,10 +41,6 @@ export default class CreateCharacter {
     }
   }
 
-  addAnimation(configs: AnimationConfig[]) {
-    createAnimation.call(this.scene, configs);
-  }
-
   checkCollision(x: number, y: number, world: any, collision: number[]) {
     for (const [key, value] of Object.entries(this.collision)) {
       const valueLine = key === "top" || key === "bottom" ? "y" : "x";

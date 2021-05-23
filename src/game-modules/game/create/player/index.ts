@@ -61,7 +61,6 @@ export default class CreatePlayer extends CreateCharacter {
     );
 
     const [xSide, ySide] = side;
-
     if (xSide !== "stop") {
       if (this.actor.anims.isPaused) {
         this.actor.anims.play(this.actor.anims.currentAnim);

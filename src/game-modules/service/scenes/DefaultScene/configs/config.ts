@@ -1,5 +1,5 @@
-import { zombieAnimation } from "./animations";
 import { EnemyListConfig } from "./types";
+import { animationList } from "./animations";
 
 export const collisionCellIds = [0, 2, 3, 4, 5, 7, 8, 9, 10];
 
@@ -15,13 +15,10 @@ export const enemyList: EnemyListConfig[] = [
     },
     animations: {
       movement: {
-        list: zombieAnimation,
-        names: {
-          top: "zombieU",
-          bottom: "zombieD",
-          left: "zombieL",
-          right: "zombieR",
-        },
+        top: "zombieU", //animationList > key
+        bottom: "zombieD",
+        left: "zombieL",
+        right: "zombieR",
       },
     },
   },

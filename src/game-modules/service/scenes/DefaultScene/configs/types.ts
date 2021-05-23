@@ -15,13 +15,8 @@ export interface AnimationsListType {
   right: string;
 }
 
-export interface AnimationProvider {
-  list: AnimationConfig[];
-  names: AnimationsListType;
-}
-
 export interface EnemyAnimationTypes {
-  movement: AnimationProvider;
+  movement: AnimationsListType;
 }
 
 export interface EnemyListConfig {

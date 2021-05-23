@@ -9,7 +9,7 @@ const goingAnimationFrames = {
   repeat: -1,
 };
 
-export const playerAnims: AnimationConfig[] = [
+export const animationList: AnimationConfig[] = [
   {
     key: "playerGoUp",
     frame: {
@@ -38,9 +38,6 @@ export const playerAnims: AnimationConfig[] = [
       name: "playerRight",
     },
   },
-];
-
-export const zombieAnimation: AnimationConfig[] = [
   {
     key: "zombieU",
     frame: {
