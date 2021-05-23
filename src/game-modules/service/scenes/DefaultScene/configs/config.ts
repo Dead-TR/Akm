@@ -20,6 +20,7 @@ export const enemyList: EnemyListConfig[] = [
         left: "zombieL",
         right: "zombieR",
       },
+      sword: "clawsFight",
     },
   },
 ];

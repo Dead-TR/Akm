@@ -12,11 +12,15 @@ import DefaultScene from "../service/scenes/DefaultScene";
 
 export default class Game {
   scene: DefaultScene;
-  create: CreateGameTypes;
   load: LoadGameTypes;
+  create: CreateGameTypes;
 
   constructor(scene: DefaultScene) {
     this.scene = scene;
+    this.load = {
+      preload: preloadData.bind(this.scene),
+      animation: createAnimation.bind(this.scene),
+    };
     this.create = {
       world: createWorld.bind(this.scene),
       player: createPlayer.bind(this.scene),
@@ -27,10 +31,6 @@ export default class Game {
       ui: {
         cursor: createCursor.bind(this.scene),
       },
-    };
-    this.load = {
-      preload: preloadData.bind(this.scene),
-      animation: createAnimation.bind(this.scene),
     };
   }
 

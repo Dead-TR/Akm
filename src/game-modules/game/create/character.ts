@@ -1,11 +1,19 @@
 import { Scene } from "phaser";
 import { AnimationsListType } from "../../service/scenes/DefaultScene/configs/types";
-import { AnimationConfig, Sides } from "../types";
-import createAnimation from "./animation";
+import { MortalTypes, Sides } from "../types";
 
 export default class CreateCharacter {
   actor;
   scene: Scene;
+  params = {
+    health: 100,
+    armor: 10,
+    attack: 10,
+  };
+  mortal: MortalTypes = {
+    isActive: false,
+    sword: null,
+  };
 
   collision = {
     top: {

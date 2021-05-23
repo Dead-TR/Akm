@@ -9,7 +9,7 @@ export default function create(scene: DefaultScene) {
       config.y,
       config.spriteSheet,
       config.textureFrame,
-      animations.movement,
+      animations,
       {
         origin: config.origin,
         vision: 50,

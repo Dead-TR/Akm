@@ -17,6 +17,7 @@ export interface AnimationsListType {
 
 export interface EnemyAnimationTypes {
   movement: AnimationsListType;
+  sword: string;
 }
 
 export interface EnemyListConfig {

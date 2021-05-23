@@ -2,4 +2,5 @@ import { AnimationsListType } from "../../../service/scenes/DefaultScene/configs
 
 export interface EnemyAnimationsList {
   movement: AnimationsListType;
+  sword?: string;
 }

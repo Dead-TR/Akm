@@ -1,5 +1,5 @@
-import { AnimationsListType } from "../service/scenes/DefaultScene/configs/types";
-import { CreateCharacter, CreateEnemy, CreatePlayer, World } from "./create";
+import { EnemyAnimationTypes } from "../service/scenes/DefaultScene/configs/types";
+import { CreateEnemy, CreatePlayer, World } from "./create";
 
 export interface PreloadTypes {
   method: keyof Phaser.Loader.LoaderPlugin;
@@ -46,7 +46,7 @@ export interface CreateGameTypes {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    animations: AnimationsListType,
+    animations: EnemyAnimationTypes,
     params?: {
       origin?: number[];
       vision?: number;
@@ -95,3 +95,8 @@ export interface SimpleObject {
 }
 
 export type Sides = "top" | "bottom" | "left" | "right" | "stop";
+
+export interface MortalTypes {
+  isActive: boolean;
+  sword: Phaser.GameObjects.Sprite | null;
+}

@@ -1,69 +1,68 @@
-import { AnimationConfig } from "../../../../game/types";
-
-const goingAnimationFrames = {
-  ways: {
-    start: 0,
-    end: 3,
-  },
-  frameRate: 6,
-  repeat: -1,
-};
+import { AnimationConfig } from "../../../../../game/types";
+import { fightFrames, goingFrames } from "./settings";
 
 export const animationList: AnimationConfig[] = [
   {
     key: "playerGoUp",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "playerUp",
     },
   },
   {
     key: "playerGoDown",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "playerDown",
     },
   },
   {
     key: "playerGoLeft",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "playerLeft",
     },
   },
   {
     key: "playerGoRight",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "playerRight",
     },
   },
   {
     key: "zombieU",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "zombieUp",
     },
   },
   {
     key: "zombieD",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "zombieDown",
     },
   },
   {
     key: "zombieL",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "zombieLeft",
     },
   },
   {
     key: "zombieR",
     frame: {
-      ...goingAnimationFrames,
+      ...goingFrames,
       name: "zombieRight",
+    },
+  },
+  {
+    key: "clawsFight",
+    frame: {
+      ...fightFrames,
+      name: "claws",
     },
   },
 ];
