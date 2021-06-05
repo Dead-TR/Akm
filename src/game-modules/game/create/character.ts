@@ -46,7 +46,6 @@ export default class CreateCharacter {
       blocked: false,
     },
   };
-  dead = false;
 
   constructor(
     scene: Scene,
@@ -71,11 +70,10 @@ export default class CreateCharacter {
     this.mortal.sword?.destroy();
     this.mortal.isActive = false;
     this.actor.destroy();
-    this.dead = true;
   }
 
   mortalAnimationPlay(isFight?: boolean) {
-    if (!this.animations || this.dead) {
+    if (!this.animations || this.params.health <= 0) {
       return;
     }
     if (isFight) {
@@ -108,7 +106,7 @@ export default class CreateCharacter {
   }
 
   mortalCalculate(enemy?: CharactersPosterity) {
-    if (!enemy || this.dead) {
+    if (!enemy || this.params.health <= 0) {
       return;
     }
 
@@ -176,7 +174,7 @@ export default class CreateCharacter {
   }
 
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
-    if (this.dead) {
+    if (this.params.health <= 0) {
       return ["stop", "stop"];
     }
 
@@ -213,7 +211,7 @@ export default class CreateCharacter {
   }
 
   movementAnimation(side: Sides[], movement?: AnimationsListType) {
-    if (!movement || this.dead) {
+    if (!movement || this.params.health <= 0) {
       return;
     }
     const [xSide, ySide] = side;
