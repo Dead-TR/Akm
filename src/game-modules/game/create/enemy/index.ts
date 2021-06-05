@@ -1,9 +1,7 @@
 import DefaultScene from "../../../service/scenes/DefaultScene";
-import { EnemyAnimationsList } from "../../types";
+import { CharactersPosterity, EnemyAnimationsList } from "../../types";
 
 import CreateCharacter from ".././character";
-
-type Actor = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
 export function createEnemy(
   this: DefaultScene,
@@ -20,6 +18,7 @@ export function createEnemy(
       health: number;
       armor: number;
       attack: number;
+      coolDown: number;
     };
   }
 ) {
@@ -55,6 +54,7 @@ export default class CreateEnemy extends CreateCharacter {
         health: number;
         armor: number;
         attack: number;
+        coolDown: number;
       };
     }
   ) {
@@ -72,11 +72,11 @@ export default class CreateEnemy extends CreateCharacter {
     }
   }
 
-  watching(enemies: CreateCharacter[], collision?: number[]) {
+  watching(enemies: CharactersPosterity[], collision?: number[]) {
     let accuracy = 15;
     const fightDistance = 16;
 
-    let target: CreateCharacter | undefined = undefined;
+    let target: CharactersPosterity | undefined = undefined;
 
     if (!target) {
       target = enemies.find((enemy) => {
@@ -124,9 +124,10 @@ export default class CreateEnemy extends CreateCharacter {
         Math.abs(params.direction.x) <= fightDistance &&
         Math.abs(params.direction.y) <= fightDistance;
 
-      this.mortalPlay(enemyOnAttackDistance || !!this.mortal.enemy);
+      this.mortalAnimationPlay(enemyOnAttackDistance);
 
       if (enemyOnAttackDistance) {
+        this.mortalCalculate(target);
         target.mortal.enemy = this;
       } else {
         target.mortal.enemy = null;

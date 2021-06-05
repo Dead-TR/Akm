@@ -38,11 +38,18 @@ export default class CreatePlayer extends CreateCharacter {
     });
     this.scene = scene;
     this.animations = params.animation;
+
+    this.params = {
+      health: 200,
+      armor: 50,
+      attack: 11,
+      coolDown: 50,
+      speed: 100,
+    };
   }
 
   //@ts-ignore
   move(cursor: any, world: any, collision: number[]) {
-    let speed = 100;
     let accuracy = 5;
 
     this.checkCollision(this.actor.x, this.actor.y, world, collision);
@@ -62,15 +69,15 @@ export default class CreatePlayer extends CreateCharacter {
     const side = super.move(
       params.coordinates.x,
       params.coordinates.y,
-      speed,
+      this.params.speed,
       accuracy
     );
 
     this.movementAnimation(side, this.animations?.movement);
-
-    this.mortalPlay(!!this.mortal.enemy);
+    this.mortalAnimationPlay(!!this.mortal.enemy);
 
     if (this.mortal.enemy) {
+      this.mortalCalculate(this.mortal.enemy);
     }
 
     return side;

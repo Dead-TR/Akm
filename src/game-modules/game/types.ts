@@ -109,7 +109,11 @@ export type Sides = "top" | "bottom" | "left" | "right" | "stop";
 export interface MortalTypes {
   isActive: boolean;
   sword: Phaser.GameObjects.Sprite | null;
-  enemy: CreateCharacter | null;
+  enemy: CharactersPosterity | null;
+
+  fight: {
+    coolDown: number;
+  };
 }
 
 export interface EnemyConfigUnit {

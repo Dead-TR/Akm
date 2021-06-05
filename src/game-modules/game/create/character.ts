@@ -2,6 +2,7 @@ import { Scene } from "phaser";
 import {
   AnimationsListType,
   CharacterAnimationsList,
+  CharactersPosterity,
   MortalTypes,
   Sides,
 } from "../types";
@@ -16,13 +17,17 @@ export default class CreateCharacter {
     attack: 10,
 
     speed: 100,
+    coolDown: 50,
   };
   mortal: MortalTypes = {
     isActive: false,
     sword: null,
     enemy: null,
-  };
 
+    fight: {
+      coolDown: 50,
+    },
+  };
   collision = {
     top: {
       calc: -15,
@@ -41,6 +46,7 @@ export default class CreateCharacter {
       blocked: false,
     },
   };
+  dead = false;
 
   constructor(
     scene: Scene,
@@ -61,8 +67,15 @@ export default class CreateCharacter {
     }
   }
 
-  mortalPlay(isFight?: boolean) {
-    if (!this.animations) {
+  setDeath() {
+    this.mortal.sword?.destroy();
+    this.mortal.isActive = false;
+    this.actor.destroy();
+    this.dead = true;
+  }
+
+  mortalAnimationPlay(isFight?: boolean) {
+    if (!this.animations || this.dead) {
       return;
     }
     if (isFight) {
@@ -91,6 +104,23 @@ export default class CreateCharacter {
         this.mortal.sword.destroy();
         this.mortal.sword = null;
       }
+    }
+  }
+
+  mortalCalculate(enemy?: CharactersPosterity) {
+    if (!enemy || this.dead) {
+      return;
+    }
+
+    if (this.mortal.fight.coolDown === this.params.coolDown) {
+      const damage = this.params.attack - enemy.params.armor;
+      const minDamage = 0;
+      enemy.params.health -= damage > 0 ? damage : minDamage;
+    }
+
+    if (enemy.params.health <= 0) {
+      enemy.setDeath();
+      this.mortal.sword?.destroy();
     }
   }
 
@@ -146,6 +176,10 @@ export default class CreateCharacter {
   }
 
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
+    if (this.dead) {
+      return ["stop", "stop"];
+    }
+
     const xSide =
       this.actor.x - x < -accuracy
         ? "right"
@@ -179,7 +213,7 @@ export default class CreateCharacter {
   }
 
   movementAnimation(side: Sides[], movement?: AnimationsListType) {
-    if (!movement) {
+    if (!movement || this.dead) {
       return;
     }
     const [xSide, ySide] = side;

@@ -21,7 +21,14 @@ export default function create(scene: DefaultScene) {
 
 export function movementWatching(scene: DefaultScene) {
   for (const [name, character] of Object.entries(scene.enemy)) {
-    //@ts-ignore
     character.watching([scene.player], collisionCellIds);
+  }
+}
+
+export function setDeath(scene: DefaultScene) {
+  for (const [name, character] of Object.entries(scene.enemy)) {
+    if (character.params.health < 0) {
+      delete scene.enemy[name];
+    }
   }
 }

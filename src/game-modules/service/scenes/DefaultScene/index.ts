@@ -7,6 +7,7 @@ import { animationList } from "./configs/animations";
 import { collisionCellIds, enemyList } from "./configs/config";
 import enemyCreator, {
   movementWatching as enemyMovement,
+  setDeath,
 } from "./configs/enemy";
 import { objects } from "./configs/objects";
 import preloadData from "./configs/preloadData";
@@ -81,5 +82,6 @@ export default class DefaultScene extends Scene {
     ]);
 
     enemyMovement(this);
+    setDeath(this);
   }
 }
