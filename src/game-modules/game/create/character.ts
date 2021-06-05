@@ -1,18 +1,26 @@
 import { Scene } from "phaser";
-import { AnimationsListType } from "../../service/scenes/DefaultScene/configs/types";
-import { MortalTypes, Sides } from "../types";
+import {
+  AnimationsListType,
+  CharacterAnimationsList,
+  MortalTypes,
+  Sides,
+} from "../types";
 
 export default class CreateCharacter {
   actor;
   scene: Scene;
+  animations?: CharacterAnimationsList;
   params = {
     health: 100,
     armor: 10,
     attack: 10,
+
+    speed: 100,
   };
   mortal: MortalTypes = {
     isActive: false,
     sword: null,
+    enemy: null,
   };
 
   collision = {
@@ -40,13 +48,49 @@ export default class CreateCharacter {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    origin?: number[]
+    params: {
+      origin?: number[];
+      animations?: CharacterAnimationsList;
+    }
   ) {
     this.scene = scene;
     this.actor = scene.physics.add.sprite(x, y, spriteSheet, textureFrame);
 
-    if (origin) {
-      this.actor.setOrigin(...origin);
+    if (params.origin) {
+      this.actor.setOrigin(...params.origin);
+    }
+  }
+
+  mortalPlay(isFight?: boolean) {
+    if (!this.animations) {
+      return;
+    }
+    if (isFight) {
+      if (!this.mortal.isActive) {
+        this.mortal.isActive = true;
+
+        if (!this.mortal.sword) {
+          this.mortal.sword = this.scene.add
+            .sprite(this.actor.x, this.actor.y, "")
+            .setOrigin(this.actor.originX, this.actor.originY);
+
+          this.mortal.sword.play(this.animations.sword);
+        }
+      } else {
+        if (this.mortal.sword) {
+          this.mortal.sword.x = this.actor.x;
+          this.mortal.sword.y = this.actor.y;
+          this.mortal.sword.setDepth(this.actor.depth + 1);
+        }
+      }
+    } else {
+      if (this.mortal.isActive) {
+        this.mortal.isActive = false;
+      }
+      if (this.mortal.sword) {
+        this.mortal.sword.destroy();
+        this.mortal.sword = null;
+      }
     }
   }
 
@@ -134,7 +178,10 @@ export default class CreateCharacter {
     return [xSide, ySide];
   }
 
-  movementAnimation(side: Sides[], movement: AnimationsListType) {
+  movementAnimation(side: Sides[], movement?: AnimationsListType) {
+    if (!movement) {
+      return;
+    }
     const [xSide, ySide] = side;
 
     if (xSide !== "stop") {

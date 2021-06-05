@@ -1,5 +1,6 @@
-import { EnemyAnimationTypes } from "../service/scenes/DefaultScene/configs/types";
-import { CreateEnemy, CreatePlayer, World } from "./create";
+import { CreateCharacter, CreateEnemy, CreatePlayer, World } from "./create";
+
+export type CharactersPosterity = CreateCharacter | CreateEnemy | CreatePlayer;
 
 export interface PreloadTypes {
   method: keyof Phaser.Loader.LoaderPlugin;
@@ -39,14 +40,17 @@ export interface CreateGameTypes {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    origin?: number[]
+    params: {
+      origin?: number[];
+      animation: CharacterAnimationsList;
+    }
   ) => CreatePlayer;
   enemy: (
     x: number,
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    animations: EnemyAnimationTypes,
+    animations: EnemyAnimationsList,
     params?: {
       origin?: number[];
       vision?: number;
@@ -60,6 +64,12 @@ export interface CreateGameTypes {
   ) => Phaser.Cameras.Scene2D.Camera;
 
   ui: UI;
+}
+
+export interface UpdateGameTypes {
+  check: {
+    characterZIndex: (characters: CharactersPosterity[]) => void;
+  };
 }
 
 export type ColliderObject =
@@ -99,4 +109,33 @@ export type Sides = "top" | "bottom" | "left" | "right" | "stop";
 export interface MortalTypes {
   isActive: boolean;
   sword: Phaser.GameObjects.Sprite | null;
+  enemy: CreateCharacter | null;
+}
+
+export interface EnemyConfigUnit {
+  x: number;
+  y: number;
+  spriteSheet: string;
+  textureFrame: string | number | undefined;
+  origin?: number[];
+}
+
+export interface AnimationsListType {
+  top: string;
+  bottom: string;
+  left: string;
+  right: string;
+}
+
+export interface CharacterAnimationsList {
+  movement: AnimationsListType;
+  sword: string;
+}
+
+export interface EnemyAnimationsList extends CharacterAnimationsList {}
+
+export interface EnemyListConfig {
+  name: string;
+  config: EnemyConfigUnit;
+  animations: EnemyAnimationsList;
 }

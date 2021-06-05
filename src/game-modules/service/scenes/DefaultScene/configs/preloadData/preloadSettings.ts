@@ -25,8 +25,8 @@ export const fightEffects = {
   sword_1: {
     name: "sword_1.png",
     frame: {
-      frameWidth: 192,
-      frameHeight: 192,
+      frameWidth: 80,
+      frameHeight: 80,
       startFrame: 0,
       endFrame: 23,
     },

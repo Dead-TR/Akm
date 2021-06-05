@@ -1,12 +1,8 @@
 import DefaultScene from "../../../service/scenes/DefaultScene";
+import { CharacterAnimationsList } from "../../types";
 import CreateCharacter from "../character";
 
-enum Animation {
-  "left" = "playerGoLeft",
-  "right" = "playerGoRight",
-  "top" = "playerGoUp",
-  "bottom" = "playerGoDown",
-}
+enum Animation {}
 
 export function createPlayer(
   this: DefaultScene,
@@ -14,9 +10,12 @@ export function createPlayer(
   y: number,
   spriteSheet: string,
   textureFrame: string | number | undefined,
-  origin?: number[]
+  params: {
+    origin?: number[];
+    animation: CharacterAnimationsList;
+  }
 ) {
-  return new CreatePlayer(this, x, y, spriteSheet, textureFrame, origin);
+  return new CreatePlayer(this, x, y, spriteSheet, textureFrame, params);
 }
 
 export default class CreatePlayer extends CreateCharacter {
@@ -28,10 +27,17 @@ export default class CreatePlayer extends CreateCharacter {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    origin?: number[]
+    params: {
+      origin?: number[];
+      animation: CharacterAnimationsList;
+    }
   ) {
-    super(scene, x, y, spriteSheet, textureFrame, origin);
+    super(scene, x, y, spriteSheet, textureFrame, {
+      origin: params?.origin,
+      animations: params.animation,
+    });
     this.scene = scene;
+    this.animations = params.animation;
   }
 
   //@ts-ignore
@@ -60,7 +66,12 @@ export default class CreatePlayer extends CreateCharacter {
       accuracy
     );
 
-    this.movementAnimation(side, Animation);
+    this.movementAnimation(side, this.animations?.movement);
+
+    this.mortalPlay(!!this.mortal.enemy);
+
+    if (this.mortal.enemy) {
+    }
 
     return side;
   }

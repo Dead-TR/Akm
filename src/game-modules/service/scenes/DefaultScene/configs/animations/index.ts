@@ -65,4 +65,11 @@ export const animationList: AnimationConfig[] = [
       name: "claws",
     },
   },
+  {
+    key: "sword_1Fight",
+    frame: {
+      ...fightFrames,
+      name: "sword_1",
+    },
+  },
 ];

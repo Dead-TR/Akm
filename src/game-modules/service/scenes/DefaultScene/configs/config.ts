@@ -1,5 +1,4 @@
-import { EnemyListConfig } from "./types";
-import { animationList } from "./animations";
+import { EnemyListConfig } from "../../../../game/types";
 
 export const collisionCellIds = [0, 2, 3, 4, 5, 7, 8, 9, 10];
 

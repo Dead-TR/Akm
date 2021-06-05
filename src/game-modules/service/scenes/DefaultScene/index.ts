@@ -4,7 +4,7 @@ import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
 import { EnemyListType } from "../../../game/types";
 import { animationList } from "./configs/animations";
-import { collisionCellIds } from "./configs/config";
+import { collisionCellIds, enemyList } from "./configs/config";
 import enemyCreator, {
   movementWatching as enemyMovement,
 } from "./configs/enemy";
@@ -41,7 +41,18 @@ export default class DefaultScene extends Scene {
     );
     this.world.addSimpleObjects(objects);
 
-    this.player = this.engine.create.player(64, 64, "playerUp", 1, [0.5, 0.8]);
+    this.player = this.engine.create.player(64, 64, "playerUp", 1, {
+      origin: [0.5, 0.8],
+      animation: {
+        movement: {
+          left: "playerGoLeft",
+          right: "playerGoRight",
+          top: "playerGoUp",
+          bottom: "playerGoDown",
+        },
+        sword: "sword_1Fight",
+      },
+    });
     enemyCreator(this);
 
     this.state.camera = this.engine.create.camera(
@@ -63,6 +74,11 @@ export default class DefaultScene extends Scene {
   }
   update() {
     this.player.move(this.state.cursor, this.world.world, collisionCellIds);
+
+    this.engine.update.check.characterZIndex([
+      this.player,
+      ...Object.values(this.enemy),
+    ]);
 
     enemyMovement(this);
   }

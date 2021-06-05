@@ -6,14 +6,16 @@ import {
   createPlayer,
   createWorld,
 } from "./create";
-import { CreateGameTypes, LoadGameTypes } from "./types";
+import { CreateGameTypes, LoadGameTypes, UpdateGameTypes } from "./types";
 import { preloadData } from "./load/preload";
 import DefaultScene from "../service/scenes/DefaultScene";
+import { checkCharacterZIndex } from "./update";
 
 export default class Game {
   scene: DefaultScene;
   load: LoadGameTypes;
   create: CreateGameTypes;
+  update: UpdateGameTypes;
 
   constructor(scene: DefaultScene) {
     this.scene = scene;
@@ -30,6 +32,11 @@ export default class Game {
 
       ui: {
         cursor: createCursor.bind(this.scene),
+      },
+    };
+    this.update = {
+      check: {
+        characterZIndex: checkCharacterZIndex.bind(this.scene),
       },
     };
   }

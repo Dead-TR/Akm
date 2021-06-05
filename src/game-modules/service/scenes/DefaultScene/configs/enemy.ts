@@ -2,8 +2,8 @@ import DefaultScene from "..";
 import { collisionCellIds, enemyList } from "./config";
 
 export default function create(scene: DefaultScene) {
-  enemyList.forEach((unit) => {
-    const { name, config, animations } = unit;
+  enemyList.forEach((enemyUnit) => {
+    const { name, config, animations } = enemyUnit;
     scene.enemy[name] = scene.engine.create.enemy(
       config.x,
       config.y,
@@ -12,7 +12,7 @@ export default function create(scene: DefaultScene) {
       animations,
       {
         origin: config.origin,
-        vision: 50,
+        vision: 150,
         speed: 100,
       }
     );
@@ -21,6 +21,7 @@ export default function create(scene: DefaultScene) {
 
 export function movementWatching(scene: DefaultScene) {
   for (const [name, character] of Object.entries(scene.enemy)) {
-    character.watching([scene.player.actor], collisionCellIds);
+    //@ts-ignore
+    character.watching([scene.player], collisionCellIds);
   }
 }

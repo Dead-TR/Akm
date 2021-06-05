@@ -1,10 +1,7 @@
 import DefaultScene from "../../../service/scenes/DefaultScene";
-import {
-  AnimationsListType,
-  EnemyAnimationTypes,
-} from "../../../service/scenes/DefaultScene/configs/types";
+import { EnemyAnimationsList } from "../../types";
+
 import CreateCharacter from ".././character";
-import { EnemyAnimationsList } from "./types";
 
 type Actor = Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
@@ -14,12 +11,12 @@ export function createEnemy(
   y: number,
   spriteSheet: string,
   textureFrame: string | number | undefined,
-  animations: EnemyAnimationTypes,
+  animations: EnemyAnimationsList,
   params?: {
     origin?: number[];
     vision?: number;
-    speed?: number;
     char?: {
+      speed: number;
       health: number;
       armor: number;
       attack: number;
@@ -40,7 +37,6 @@ export function createEnemy(
 export default class CreateEnemy extends CreateCharacter {
   scene: DefaultScene;
   visionDistance = 100;
-  speed = 100;
   animations: EnemyAnimationsList;
 
   constructor(
@@ -49,23 +45,26 @@ export default class CreateEnemy extends CreateCharacter {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    animations: EnemyAnimationTypes,
+    animations: EnemyAnimationsList,
 
     params?: {
       origin?: number[];
       vision?: number;
-      speed?: number;
       char?: {
+        speed: number;
         health: number;
         armor: number;
         attack: number;
       };
     }
   ) {
-    super(scene, x, y, spriteSheet, textureFrame, params?.origin);
+    super(scene, x, y, spriteSheet, textureFrame, {
+      origin: params?.origin,
+      animations: animations,
+    });
     this.scene = scene;
     this.visionDistance = params?.vision || this.visionDistance;
-    this.speed = params?.speed || this.speed;
+
     this.animations = animations;
 
     if (params?.char) {
@@ -73,34 +72,30 @@ export default class CreateEnemy extends CreateCharacter {
     }
   }
 
-  watching(enemies: Actor[], collision?: number[]) {
+  watching(enemies: CreateCharacter[], collision?: number[]) {
     let accuracy = 15;
     const fightDistance = 16;
 
-    let target: Actor | undefined = undefined;
+    let target: CreateCharacter | undefined = undefined;
 
     if (!target) {
       target = enemies.find((enemy) => {
-        const xDifference = Math.abs(enemy.x - this.actor.x);
-        const yDifference = Math.abs(enemy.y - this.actor.y);
-
-        if (
-          xDifference < this.visionDistance ||
-          yDifference < this.visionDistance
-        ) {
-          return enemy;
-        }
+        const xDifference = Math.abs(enemy.actor.x - this.actor.x);
+        const yDifference = Math.abs(enemy.actor.y - this.actor.y);
+        return (
+          xDifference < this.visionDistance && yDifference < this.visionDistance
+        );
       });
     }
     if (target) {
       const params = {
         direction: {
-          x: target.x - this.actor.x,
-          y: target.y - this.actor.y,
+          x: target.actor.x - this.actor.x,
+          y: target.actor.y - this.actor.y,
         },
         coordinates: {
-          x: target.x,
-          y: target.y,
+          x: target.actor.x,
+          y: target.actor.y,
         },
       };
       if (collision) {
@@ -115,7 +110,7 @@ export default class CreateEnemy extends CreateCharacter {
       const side = super.move(
         params.coordinates.x,
         params.coordinates.y,
-        this.speed,
+        this.params.speed,
         accuracy
       );
 
@@ -125,34 +120,16 @@ export default class CreateEnemy extends CreateCharacter {
         this.movementAnimation(side, movement);
       }
 
-      if (
+      const enemyOnAttackDistance =
         Math.abs(params.direction.x) <= fightDistance &&
-        Math.abs(params.direction.y) <= fightDistance
-      ) {
-        if (!this.mortal.isActive) {
-          this.mortal.isActive = true;
+        Math.abs(params.direction.y) <= fightDistance;
 
-          this.mortal.sword = this.scene.add
-            .sprite(this.actor.x, this.actor.y, "")
-            .setOrigin(this.actor.originX, this.actor.originY);
+      this.mortalPlay(enemyOnAttackDistance || !!this.mortal.enemy);
 
-          if (this.animations.sword) {
-            this.mortal.sword.play(this.animations.sword);
-          }
-        } else {
-          if (this.mortal.sword) {
-            this.mortal.sword.x = this.actor.x;
-            this.mortal.sword.y = this.actor.y;
-          }
-        }
+      if (enemyOnAttackDistance) {
+        target.mortal.enemy = this;
       } else {
-        if (this.mortal.isActive) {
-          this.mortal.isActive = false;
-        }
-        if (this.mortal.sword) {
-          this.mortal.sword.destroy();
-          this.mortal.sword = null;
-        }
+        target.mortal.enemy = null;
       }
     }
   }
