@@ -2,8 +2,7 @@ import DefaultScene from "../../../service/scenes/DefaultScene";
 import { CharacterAnimationsList } from "../../types";
 import CreateCharacter from "../character";
 
-enum Animation {}
-
+let test: any;
 export function createPlayer(
   this: DefaultScene,
   x: number,
@@ -40,10 +39,10 @@ export default class CreatePlayer extends CreateCharacter {
     this.animations = params.animation;
 
     this.params = {
-      health: 200,
-      armor: 50,
+      health: 100,
+      armor: 999999999999999,
       attack: 11,
-      coolDown: 50,
+      coolDown: 0,
       speed: 100,
     };
   }

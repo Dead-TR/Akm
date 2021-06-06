@@ -12,10 +12,6 @@ export interface CursorBorderType {
   size: number;
 }
 
-export interface EnemyListType {
-  [name: string]: CreateEnemy;
-}
-
 export interface UI {
   cursor: (
     x: number,
@@ -107,9 +103,9 @@ export interface SimpleObject {
 export type Sides = "top" | "bottom" | "left" | "right" | "stop";
 
 export interface MortalTypes {
-  isActive: boolean;
   sword: Phaser.GameObjects.Sprite | null;
   enemy: CharactersPosterity | null;
+  target: CharactersPosterity | null;
 
   fight: {
     coolDown: number;

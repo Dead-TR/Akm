@@ -19,15 +19,15 @@ export default class CreateCharacter {
     attack: 10,
 
     speed: 100,
-    coolDown: 50,
+    coolDown: 5,
   };
   elements: CharacterElements = {
     healthLine: null,
   };
   mortal: MortalTypes = {
-    isActive: false,
     sword: null,
     enemy: null,
+    target: null,
 
     fight: {
       health: 100,
@@ -74,9 +74,12 @@ export default class CreateCharacter {
 
   setDeath() {
     this.mortal.sword?.destroy();
-    this.mortal.isActive = false;
+    this.actor.x = -1000;
     this.actor.destroy();
     this.elements.healthLine?.destroy();
+    if (this.mortal.enemy) {
+      this.mortal.enemy.mortal.enemy = null;
+    }
   }
 
   mortalAnimationPlay(isFight?: boolean) {
@@ -84,27 +87,18 @@ export default class CreateCharacter {
       return;
     }
     if (isFight) {
-      if (!this.mortal.isActive) {
-        this.mortal.isActive = true;
+      if (!this.mortal.sword || !this.mortal.sword.active) {
+        this.mortal.sword = this.scene.add
+          .sprite(this.actor.x, this.actor.y, "")
+          .setOrigin(this.actor.originX, this.actor.originY);
 
-        if (!this.mortal.sword) {
-          this.mortal.sword = this.scene.add
-            .sprite(this.actor.x, this.actor.y, "")
-            .setOrigin(this.actor.originX, this.actor.originY);
-
-          this.mortal.sword.play(this.animations.sword);
-        }
+        this.mortal.sword.play(this.animations.sword);
       } else {
-        if (this.mortal.sword) {
-          this.mortal.sword.x = this.actor.x;
-          this.mortal.sword.y = this.actor.y;
-          this.mortal.sword.setDepth(this.actor.depth + 1);
-        }
+        this.mortal.sword.x = this.actor.x;
+        this.mortal.sword.y = this.actor.y;
+        this.mortal.sword.setDepth(this.actor.depth + 1);
       }
     } else {
-      if (this.mortal.isActive) {
-        this.mortal.isActive = false;
-      }
       if (this.mortal.sword) {
         this.mortal.sword.destroy();
         this.mortal.sword = null;
@@ -119,22 +113,26 @@ export default class CreateCharacter {
 
     if (this.elements.healthLine) {
       const healthPercent = this.mortal.fight.health / this.params.health;
-      console.log(
-        "🚀 ~ file: character.ts ~ line 122 ~ CreateCharacter ~ mortalCalculate ~ healthPercent",
-        healthPercent
-      );
       this.elements.healthLine.scaleX = healthPercent;
     }
 
     if (this.mortal.fight.coolDown === this.params.coolDown) {
+      this.mortal.fight.coolDown--;
       const damage = this.params.attack - enemy.params.armor;
       const minDamage = 0;
       enemy.mortal.fight.health -= damage > 0 ? damage : minDamage;
+    } else {
+      this.mortal.fight.coolDown--;
+      if (this.mortal.fight.coolDown < 0) {
+        this.mortal.fight.coolDown = this.params.coolDown;
+      }
     }
 
     if (enemy.mortal.fight.health <= 0) {
       enemy.setDeath();
+      this.mortal.enemy = null;
       this.mortal.sword?.destroy();
+      this.mortal.sword = null;
     }
   }
 

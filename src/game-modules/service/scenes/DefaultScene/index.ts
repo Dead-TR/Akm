@@ -1,8 +1,8 @@
 import { Scene } from "phaser";
 import Game from "../../../game";
+import { CreateEnemy } from "../../../game/create";
 import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
-import { EnemyListType } from "../../../game/types";
 import { animationList } from "./configs/animations";
 import { collisionCellIds, enemyList } from "./configs/config";
 import enemyCreator, {
@@ -16,7 +16,7 @@ export default class DefaultScene extends Scene {
   engine: Game;
   player: CreatePlayer;
   world: World;
-  enemy: EnemyListType = {};
+  enemy: CreateEnemy[] = [];
 
   state: {
     cursor?: Phaser.GameObjects.Arc;

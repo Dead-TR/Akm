@@ -100,6 +100,7 @@ export default class CreateEnemy extends CreateCharacter {
           y: target.actor.y,
         },
       };
+
       if (collision) {
         this.checkCollision(
           this.actor.x,
