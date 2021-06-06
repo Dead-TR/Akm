@@ -70,6 +70,8 @@ export default class CreateEnemy extends CreateCharacter {
     if (params?.char) {
       this.params = params.char;
     }
+
+    this.createHealth();
   }
 
   watching(enemies: CharactersPosterity[], collision?: number[]) {

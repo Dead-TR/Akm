@@ -113,7 +113,12 @@ export interface MortalTypes {
 
   fight: {
     coolDown: number;
+    health: number;
   };
+}
+
+export interface CharacterElements {
+  healthLine: Phaser.GameObjects.Graphics | null;
 }
 
 export interface EnemyConfigUnit {

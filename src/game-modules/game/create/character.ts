@@ -1,10 +1,12 @@
 import { Scene } from "phaser";
+import { baseGameConfig } from "../config";
 import {
   AnimationsListType,
   CharacterAnimationsList,
   CharactersPosterity,
   MortalTypes,
   Sides,
+  CharacterElements,
 } from "../types";
 
 export default class CreateCharacter {
@@ -19,12 +21,16 @@ export default class CreateCharacter {
     speed: 100,
     coolDown: 50,
   };
+  elements: CharacterElements = {
+    healthLine: null,
+  };
   mortal: MortalTypes = {
     isActive: false,
     sword: null,
     enemy: null,
 
     fight: {
+      health: 100,
       coolDown: 50,
     },
   };
@@ -70,10 +76,11 @@ export default class CreateCharacter {
     this.mortal.sword?.destroy();
     this.mortal.isActive = false;
     this.actor.destroy();
+    this.elements.healthLine?.destroy();
   }
 
   mortalAnimationPlay(isFight?: boolean) {
-    if (!this.animations || this.params.health <= 0) {
+    if (!this.animations || this.mortal.fight.health <= 0) {
       return;
     }
     if (isFight) {
@@ -106,17 +113,26 @@ export default class CreateCharacter {
   }
 
   mortalCalculate(enemy?: CharactersPosterity) {
-    if (!enemy || this.params.health <= 0) {
+    if (!enemy || this.mortal.fight.health <= 0) {
       return;
+    }
+
+    if (this.elements.healthLine) {
+      const healthPercent = this.mortal.fight.health / this.params.health;
+      console.log(
+        "🚀 ~ file: character.ts ~ line 122 ~ CreateCharacter ~ mortalCalculate ~ healthPercent",
+        healthPercent
+      );
+      this.elements.healthLine.scaleX = healthPercent;
     }
 
     if (this.mortal.fight.coolDown === this.params.coolDown) {
       const damage = this.params.attack - enemy.params.armor;
       const minDamage = 0;
-      enemy.params.health -= damage > 0 ? damage : minDamage;
+      enemy.mortal.fight.health -= damage > 0 ? damage : minDamage;
     }
 
-    if (enemy.params.health <= 0) {
+    if (enemy.mortal.fight.health <= 0) {
       enemy.setDeath();
       this.mortal.sword?.destroy();
     }
@@ -174,7 +190,12 @@ export default class CreateCharacter {
   }
 
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
-    if (this.params.health <= 0) {
+    if (this.elements.healthLine) {
+      this.elements.healthLine.x = this.actor.x;
+      this.elements.healthLine.y = this.actor.y;
+    }
+
+    if (this.mortal.fight.health <= 0) {
       return ["stop", "stop"];
     }
 
@@ -210,8 +231,31 @@ export default class CreateCharacter {
     return [xSide, ySide];
   }
 
+  createHealth() {
+    const graphics = this.scene.add.graphics({
+      x: this.actor.x,
+      y: this.actor.y,
+    });
+    graphics.lineStyle(
+      baseGameConfig.sizes.health.height,
+      baseGameConfig.colors.health
+    );
+    const healthLineY =
+      baseGameConfig.sizes.health.height * -1 -
+      this.actor.height * this.actor.originY;
+
+    graphics.beginPath();
+    graphics.moveTo((baseGameConfig.sizes.health.width / 2) * -1, healthLineY);
+    graphics.lineTo(baseGameConfig.sizes.health.width / 2, healthLineY);
+    graphics.closePath();
+    graphics.strokePath();
+    graphics.setDepth(this.actor.depth + 1);
+
+    this.elements.healthLine = graphics;
+  }
+
   movementAnimation(side: Sides[], movement?: AnimationsListType) {
-    if (!movement || this.params.health <= 0) {
+    if (!movement || this.mortal.fight.health <= 0) {
       return;
     }
     const [xSide, ySide] = side;

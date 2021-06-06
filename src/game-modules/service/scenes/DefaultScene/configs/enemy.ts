@@ -27,7 +27,7 @@ export function movementWatching(scene: DefaultScene) {
 
 export function setDeath(scene: DefaultScene) {
   for (const [name, character] of Object.entries(scene.enemy)) {
-    if (character.params.health < 0) {
+    if (character.mortal.fight.health < 0) {
       delete scene.enemy[name];
     }
   }
