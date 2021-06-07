@@ -1,28 +1,24 @@
 import DefaultScene from "../../../service/scenes/DefaultScene";
+import { CharacterAnimationsList } from "../../types";
 import CreateCharacter from "../character";
 
-enum Animation {
-  "left" = "playerGoLeft",
-  "right" = "playerGoRight",
-  "top" = "playerGoUp",
-  "bottom" = "playerGoDown",
-}
-
+let test: any;
 export function createPlayer(
   this: DefaultScene,
   x: number,
   y: number,
   spriteSheet: string,
   textureFrame: string | number | undefined,
-  origin?: number[]
+  params: {
+    origin?: number[];
+    animation: CharacterAnimationsList;
+  }
 ) {
-  return new CreatePlayer(this, x, y, spriteSheet, textureFrame, origin);
+  return new CreatePlayer(this, x, y, spriteSheet, textureFrame, params);
 }
 
 export default class CreatePlayer extends CreateCharacter {
   scene: DefaultScene;
-
-  isCollisionCreated = false;
 
   constructor(
     scene: DefaultScene,
@@ -30,66 +26,57 @@ export default class CreatePlayer extends CreateCharacter {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    origin?: number[]
+    params: {
+      origin?: number[];
+      animation: CharacterAnimationsList;
+    }
   ) {
-    super(scene, x, y, spriteSheet, textureFrame, origin);
+    super(scene, x, y, spriteSheet, textureFrame, {
+      origin: params?.origin,
+      animations: params.animation,
+    });
     this.scene = scene;
+    this.animations = params.animation;
+
+    this.params = {
+      health: 100,
+      armor: 999999999999999,
+      attack: 11,
+      coolDown: 0,
+      speed: 100,
+    };
   }
 
   //@ts-ignore
   move(cursor: any, world: any, collision: number[]) {
-    let speed = 100;
     let accuracy = 5;
 
     this.checkCollision(this.actor.x, this.actor.y, world, collision);
-    const directionX = cursor.x - this.actor.x; // +right -left
-    const directionY = cursor.y - this.actor.y; // -top +bottom
+    const params = {
+      direction: {
+        x: cursor.x - this.actor.x,
+        y: cursor.y - this.actor.y,
+      },
+      coordinates: {
+        x: cursor.x,
+        y: cursor.y,
+      },
+    };
 
-    let coordinateX = cursor.x;
-    let coordinateY = cursor.y;
+    this.createCollision(params);
 
-    if (this.collision.right.blocked) {
-      if (directionX > 0) {
-        coordinateX = this.actor.x;
-      }
-    } else if (this.collision.left.blocked) {
-      if (directionX < 0) {
-        coordinateX = this.actor.x;
-      }
-    }
+    const side = super.move(
+      params.coordinates.x,
+      params.coordinates.y,
+      this.params.speed,
+      accuracy
+    );
 
-    if (this.collision.bottom.blocked) {
-      if (directionY > 0) {
-        coordinateY = this.actor.y;
-      }
-    } else if (this.collision.top.blocked) {
-      if (directionY < 0) {
-        coordinateY = this.actor.y;
-      }
-    }
+    this.movementAnimation(side, this.animations?.movement);
+    this.mortalAnimationPlay(!!this.mortal.enemy);
 
-    const side = super.move(coordinateX, coordinateY, speed, accuracy);
-
-    const [xSide, ySide] = side;
-
-    if (xSide !== "stop") {
-      if (this.actor.anims.isPaused) {
-        this.actor.anims.play(this.actor.anims.currentAnim);
-      }
-
-      if (this.actor.anims.currentAnim?.key !== Animation[xSide]) {
-        this.actor.anims.play(Animation[xSide]);
-      }
-    } else if (ySide !== "stop") {
-      if (this.actor.anims.isPaused) {
-        this.actor.anims.play(this.actor.anims.currentAnim);
-      }
-
-      if (this.actor.anims.currentAnim?.key !== Animation[ySide]) {
-        this.actor.anims.play(Animation[ySide]);
-      }
-    } else {
-      this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
+    if (this.mortal.enemy) {
+      this.mortalCalculate(this.mortal.enemy);
     }
 
     return side;

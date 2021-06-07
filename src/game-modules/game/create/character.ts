@@ -1,11 +1,39 @@
 import { Scene } from "phaser";
-import { AnimationConfig, Sides } from "../types";
-import createAnimation from "./animation";
+import { baseGameConfig } from "../config";
+import {
+  AnimationsListType,
+  CharacterAnimationsList,
+  CharactersPosterity,
+  MortalTypes,
+  Sides,
+  CharacterElements,
+} from "../types";
 
 export default class CreateCharacter {
   actor;
   scene: Scene;
+  animations?: CharacterAnimationsList;
+  params = {
+    health: 100,
+    armor: 10,
+    attack: 10,
 
+    speed: 100,
+    coolDown: 5,
+  };
+  elements: CharacterElements = {
+    healthLine: null,
+  };
+  mortal: MortalTypes = {
+    sword: null,
+    enemy: null,
+    target: null,
+
+    fight: {
+      health: 100,
+      coolDown: 50,
+    },
+  };
   collision = {
     top: {
       calc: -15,
@@ -31,18 +59,81 @@ export default class CreateCharacter {
     y: number,
     spriteSheet: string,
     textureFrame: string | number | undefined,
-    origin?: number[]
+    params: {
+      origin?: number[];
+      animations?: CharacterAnimationsList;
+    }
   ) {
     this.scene = scene;
     this.actor = scene.physics.add.sprite(x, y, spriteSheet, textureFrame);
 
-    if (origin) {
-      this.actor.setOrigin(...origin);
+    if (params.origin) {
+      this.actor.setOrigin(...params.origin);
     }
   }
 
-  addAnimation(configs: AnimationConfig[]) {
-    createAnimation.call(this.scene, configs);
+  setDeath() {
+    this.mortal.sword?.destroy();
+    this.actor.x = -1000;
+    this.actor.destroy();
+    this.elements.healthLine?.destroy();
+    if (this.mortal.enemy) {
+      this.mortal.enemy.mortal.enemy = null;
+    }
+  }
+
+  mortalAnimationPlay(isFight?: boolean) {
+    if (!this.animations || this.mortal.fight.health <= 0) {
+      return;
+    }
+    if (isFight) {
+      if (!this.mortal.sword || !this.mortal.sword.active) {
+        this.mortal.sword = this.scene.add
+          .sprite(this.actor.x, this.actor.y, "")
+          .setOrigin(this.actor.originX, this.actor.originY);
+
+        this.mortal.sword.play(this.animations.sword);
+      } else {
+        this.mortal.sword.x = this.actor.x;
+        this.mortal.sword.y = this.actor.y;
+        this.mortal.sword.setDepth(this.actor.depth + 1);
+      }
+    } else {
+      if (this.mortal.sword) {
+        this.mortal.sword.destroy();
+        this.mortal.sword = null;
+      }
+    }
+  }
+
+  mortalCalculate(enemy?: CharactersPosterity) {
+    if (!enemy || this.mortal.fight.health <= 0) {
+      return;
+    }
+
+    if (this.elements.healthLine) {
+      const healthPercent = this.mortal.fight.health / this.params.health;
+      this.elements.healthLine.scaleX = healthPercent;
+    }
+
+    if (this.mortal.fight.coolDown === this.params.coolDown) {
+      this.mortal.fight.coolDown--;
+      const damage = this.params.attack - enemy.params.armor;
+      const minDamage = 0;
+      enemy.mortal.fight.health -= damage > 0 ? damage : minDamage;
+    } else {
+      this.mortal.fight.coolDown--;
+      if (this.mortal.fight.coolDown < 0) {
+        this.mortal.fight.coolDown = this.params.coolDown;
+      }
+    }
+
+    if (enemy.mortal.fight.health <= 0) {
+      enemy.setDeath();
+      this.mortal.enemy = null;
+      this.mortal.sword?.destroy();
+      this.mortal.sword = null;
+    }
   }
 
   checkCollision(x: number, y: number, world: any, collision: number[]) {
@@ -65,7 +156,47 @@ export default class CreateCharacter {
     }
   }
 
+  createCollision(params: {
+    direction: {
+      x: number;
+      y: number;
+    };
+    coordinates: {
+      x: number;
+      y: number;
+    };
+  }) {
+    if (this.collision.right.blocked) {
+      if (params.direction.x > 0) {
+        params.coordinates.x = this.actor.x;
+      }
+    } else if (this.collision.left.blocked) {
+      if (params.direction.x < 0) {
+        params.coordinates.x = this.actor.x;
+      }
+    }
+
+    if (this.collision.bottom.blocked) {
+      if (params.direction.y > 0) {
+        params.coordinates.y = this.actor.y;
+      }
+    } else if (this.collision.top.blocked) {
+      if (params.direction.y < 0) {
+        params.coordinates.y = this.actor.y;
+      }
+    }
+  }
+
   move(x: number, y: number, speed = 100, accuracy = 10): Sides[] {
+    if (this.elements.healthLine) {
+      this.elements.healthLine.x = this.actor.x;
+      this.elements.healthLine.y = this.actor.y;
+    }
+
+    if (this.mortal.fight.health <= 0) {
+      return ["stop", "stop"];
+    }
+
     const xSide =
       this.actor.x - x < -accuracy
         ? "right"
@@ -96,5 +227,55 @@ export default class CreateCharacter {
     }
 
     return [xSide, ySide];
+  }
+
+  createHealth() {
+    const graphics = this.scene.add.graphics({
+      x: this.actor.x,
+      y: this.actor.y,
+    });
+    graphics.lineStyle(
+      baseGameConfig.sizes.health.height,
+      baseGameConfig.colors.health
+    );
+    const healthLineY =
+      baseGameConfig.sizes.health.height * -1 -
+      this.actor.height * this.actor.originY;
+
+    graphics.beginPath();
+    graphics.moveTo((baseGameConfig.sizes.health.width / 2) * -1, healthLineY);
+    graphics.lineTo(baseGameConfig.sizes.health.width / 2, healthLineY);
+    graphics.closePath();
+    graphics.strokePath();
+    graphics.setDepth(this.actor.depth + 1);
+
+    this.elements.healthLine = graphics;
+  }
+
+  movementAnimation(side: Sides[], movement?: AnimationsListType) {
+    if (!movement || this.mortal.fight.health <= 0) {
+      return;
+    }
+    const [xSide, ySide] = side;
+
+    if (xSide !== "stop") {
+      if (this.actor.anims.isPaused) {
+        this.actor.anims.play(this.actor.anims.currentAnim);
+      }
+
+      if (this.actor.anims.currentAnim?.key !== movement[xSide]) {
+        this.actor.anims.play(movement[xSide]);
+      }
+    } else if (ySide !== "stop") {
+      if (this.actor.anims.isPaused) {
+        this.actor.anims.play(this.actor.anims.currentAnim);
+      }
+
+      if (this.actor.anims.currentAnim?.key !== movement[ySide]) {
+        this.actor.anims.play(movement[ySide]);
+      }
+    } else {
+      this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
+    }
   }
 }
