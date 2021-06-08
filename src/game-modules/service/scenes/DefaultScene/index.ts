@@ -1,10 +1,12 @@
 import { Scene } from "phaser";
+
 import Game from "../../../game";
 import { CreateEnemy } from "../../../game/create";
 import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
+
 import { animationList } from "./configs/animations";
-import { collisionCellIds, enemyList } from "./configs/config";
+import { collisionCellIds } from "./configs/config";
 import enemyCreator, {
   movementWatching as enemyMovement,
   setDeath,

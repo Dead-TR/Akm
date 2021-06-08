@@ -27,7 +27,7 @@ export default class CreateCharacter {
   mortal: MortalTypes = {
     sword: null,
     enemy: null,
-    target: null,
+    target: {},
 
     fight: {
       health: 100,
