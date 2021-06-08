@@ -105,12 +105,7 @@ export type Sides = "top" | "bottom" | "left" | "right" | "stop";
 export interface MortalTypes {
   sword: Phaser.GameObjects.Sprite | null;
   enemy: CharactersPosterity | null;
-  target: {
-    goingFix?: {
-      x: number;
-      y: number;
-    };
-  };
+  target: {};
 
   fight: {
     coolDown: number;
@@ -148,4 +143,8 @@ export interface EnemyListConfig {
   name: string;
   config: EnemyConfigUnit;
   animations: EnemyAnimationsList;
+}
+
+export interface OptionalCollisionParams {
+  characters: CharactersPosterity[];
 }

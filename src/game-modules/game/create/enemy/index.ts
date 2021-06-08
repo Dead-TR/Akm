@@ -76,7 +76,7 @@ export default class CreateEnemy extends CreateCharacter {
 
   watching(enemies: CharactersPosterity[], collision?: number[]) {
     let accuracy = 15;
-    const fightDistance = 20;
+    const fightDistance = 14;
 
     let target: CharactersPosterity | undefined = undefined;
 
@@ -90,6 +90,7 @@ export default class CreateEnemy extends CreateCharacter {
       });
     }
     if (target) {
+      this.visionDistance = Infinity;
       const params = {
         direction: {
           x: target.actor.x - this.actor.x,
@@ -101,25 +102,15 @@ export default class CreateEnemy extends CreateCharacter {
         },
       };
 
-      if (!this.mortal.target.goingFix) {
-        this.mortal.target.goingFix = {
-          x: Phaser.Math.Between(-8, 8),
-          y: Phaser.Math.Between(-8, 8),
-        };
-      }
-
       if (collision) {
-        this.checkCollision(
-          this.actor.x,
-          this.actor.y,
-          this.scene.world.world,
-          collision
-        );
+        this.checkCollision(this.scene.world.world, collision, {
+          characters: this.scene.enemy,
+        });
         this.createCollision(params);
       }
       const side = super.move(
-        params.coordinates.x + (this.mortal.target.goingFix?.x || 0),
-        params.coordinates.y + (this.mortal.target.goingFix?.y || 0),
+        params.coordinates.x,
+        params.coordinates.y,
         this.params.speed,
         accuracy
       );
@@ -138,15 +129,13 @@ export default class CreateEnemy extends CreateCharacter {
 
       if (enemyOnAttackDistance) {
         this.mortalCalculate(target);
-        target.mortal.enemy = this;
-
-        if (side[0] === "stop" && side[1] === "stop") {
-          if (this.mortal.target.goingFix) {
-            this.mortal.target.goingFix = undefined;
-          }
+        if (!target.mortal.enemy) {
+          target.mortal.enemy = this;
         }
       } else {
-        target.mortal.enemy = null;
+        if (target.mortal.enemy?.actor === this.actor) {
+          target.mortal.enemy = null;
+        }
       }
     }
   }

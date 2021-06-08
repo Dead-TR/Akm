@@ -51,7 +51,7 @@ export default class CreatePlayer extends CreateCharacter {
   move(cursor: any, world: any, collision: number[]) {
     let accuracy = 5;
 
-    this.checkCollision(this.actor.x, this.actor.y, world, collision);
+    this.checkCollision(world, collision);
     const params = {
       direction: {
         x: cursor.x - this.actor.x,

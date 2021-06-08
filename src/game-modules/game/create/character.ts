@@ -7,6 +7,7 @@ import {
   MortalTypes,
   Sides,
   CharacterElements,
+  OptionalCollisionParams,
 } from "../types";
 
 export default class CreateCharacter {
@@ -136,13 +137,22 @@ export default class CreateCharacter {
     }
   }
 
-  checkCollision(x: number, y: number, world: any, collision: number[]) {
+  checkCollision(
+    world: any,
+    collision: number[],
+    optional?: OptionalCollisionParams
+  ) {
     for (const [key, value] of Object.entries(this.collision)) {
       const valueLine = key === "top" || key === "bottom" ? "y" : "x";
 
+      const coordinates = {
+        x: valueLine === "x" ? this.actor.x + value.calc : this.actor.x,
+        y: valueLine === "y" ? this.actor.y + value.calc : this.actor.y,
+      };
+
       const worldIndex = world.getTileAtWorldXY(
-        valueLine === "x" ? x + value.calc : x,
-        valueLine === "y" ? y + value.calc : y,
+        coordinates.x,
+        coordinates.y,
         false
       )?.index;
 
@@ -152,6 +162,31 @@ export default class CreateCharacter {
         value.blocked = true;
       } else {
         value.blocked = false;
+      }
+
+      if (optional) {
+        if (optional.characters) {
+          optional.characters.forEach((character) => {
+            if (character.actor === this.actor || !character.actor.active) {
+              return;
+            }
+            const accuracy = 7;
+
+            const checkCoordinates = {
+              x:
+                character.actor.x <= coordinates.x + accuracy &&
+                character.actor.x >= coordinates.x - accuracy,
+              y:
+                character.actor.y <= coordinates.y + accuracy &&
+                character.actor.y >= coordinates.y - accuracy,
+            };
+            if (checkCoordinates.x && checkCoordinates.y) {
+              if (!value.blocked) {
+                value.blocked = true;
+              }
+            }
+          });
+        }
       }
     }
   }
@@ -247,7 +282,7 @@ export default class CreateCharacter {
     graphics.lineTo(baseGameConfig.sizes.health.width / 2, healthLineY);
     graphics.closePath();
     graphics.strokePath();
-    graphics.setDepth(this.actor.depth + 1);
+    graphics.setDepth(this.actor.depth + 2);
 
     this.elements.healthLine = graphics;
   }

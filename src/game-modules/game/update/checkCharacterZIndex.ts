@@ -12,5 +12,6 @@ export function checkCharacterZIndex(
 
   sortedCharacters.forEach((char, i) => {
     char.actor.setDepth(i);
+    char.elements.healthLine?.setDepth(i + 1);
   });
 }
