@@ -291,26 +291,30 @@ export default class CreateCharacter {
     if (!movement || this.mortal.fight.health <= 0) {
       return;
     }
-    const [xSide, ySide] = side;
+    try {
+      const [xSide, ySide] = side;
 
-    if (xSide !== "stop") {
-      if (this.actor.anims.isPaused) {
-        this.actor.anims.play(this.actor.anims.currentAnim);
-      }
+      if (xSide !== "stop") {
+        if (this.actor.anims.isPaused) {
+          this.actor.anims.play(this.actor.anims.currentAnim);
+        }
 
-      if (this.actor.anims.currentAnim?.key !== movement[xSide]) {
-        this.actor.anims.play(movement[xSide]);
-      }
-    } else if (ySide !== "stop") {
-      if (this.actor.anims.isPaused) {
-        this.actor.anims.play(this.actor.anims.currentAnim);
-      }
+        if (this.actor.anims.currentAnim?.key !== movement[xSide]) {
+          this.actor.anims.play(movement[xSide]);
+        }
+      } else if (ySide !== "stop") {
+        if (this.actor.anims.isPaused) {
+          this.actor.anims.play(this.actor.anims.currentAnim);
+        }
 
-      if (this.actor.anims.currentAnim?.key !== movement[ySide]) {
-        this.actor.anims.play(movement[ySide]);
+        if (this.actor.anims.currentAnim?.key !== movement[ySide]) {
+          this.actor.anims.play(movement[ySide]);
+        }
+      } else {
+        this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
       }
-    } else {
-      this.actor.anims.pause(this.actor.anims.currentAnim?.frames[1]);
+    } catch {
+      this.actor.anims.pause();
     }
   }
 }
