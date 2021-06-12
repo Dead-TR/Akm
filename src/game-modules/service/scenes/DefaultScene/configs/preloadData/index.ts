@@ -1,18 +1,23 @@
 import { PreloadTypes } from "../../../../../game/types";
 import { characterData, fightEffects } from "./preloadSettings";
 
+const assets = "game/assets/";
+
 const data: PreloadTypes[] = [
   {
     method: "image",
     data: [
-      ["exampleGrassTile", "game/assets/img/DefaultScene/grass.png"],
-      ["cursor", "game/assets/img/general/cursor.png"],
-      ["empty", "game/assets/img/general/emptyLayers.png"],
+      ["exampleGrassTile", assets + "img/DefaultScene/grass.png"],
+      ["cursor", assets + "img/general/cursor.png"],
+      ["empty", assets + "img/general/emptyLayers.png"],
+      ["uiInventory", assets + "img/general/ui/inventory.png"],
+      ["inventoryBG", assets + "img/general/ui/inventoryBG.png"],
+      ["inventoryMask", assets + "img/general/ui/inventoryMask.png"],
     ],
   },
   {
     method: "tilemapCSV",
-    data: [["exampleGrid", "game/assets/grids/DefaultScene/grass.csv"]],
+    data: [["exampleGrid", assets + "grids/DefaultScene/grass.csv"]],
   },
   {
     method: "spritesheet",

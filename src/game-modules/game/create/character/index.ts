@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { baseGameConfig } from "../config";
+import { baseGameConfig } from "../../config";
 import {
   AnimationsListType,
   CharacterAnimationsList,
@@ -8,7 +8,7 @@ import {
   Sides,
   CharacterElements,
   OptionalCollisionParams,
-} from "../types";
+} from "../../types";
 
 export default class CreateCharacter {
   actor;

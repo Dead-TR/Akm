@@ -1,3 +1,4 @@
+import { Inventory } from "..";
 import DefaultScene from "../../../service/scenes/DefaultScene";
 import { CharacterAnimationsList } from "../../types";
 import CreateCharacter from "../character";
@@ -10,8 +11,9 @@ export function createPlayer(
   spriteSheet: string,
   textureFrame: string | number | undefined,
   params: {
-    origin?: number[];
     animation: CharacterAnimationsList;
+    origin?: number[];
+    inventory: string;
   }
 ) {
   return new CreatePlayer(this, x, y, spriteSheet, textureFrame, params);
@@ -19,6 +21,7 @@ export function createPlayer(
 
 export default class CreatePlayer extends CreateCharacter {
   scene: DefaultScene;
+  inventory: Inventory;
 
   constructor(
     scene: DefaultScene,
@@ -29,6 +32,7 @@ export default class CreatePlayer extends CreateCharacter {
     params: {
       origin?: number[];
       animation: CharacterAnimationsList;
+      inventory: string;
     }
   ) {
     super(scene, x, y, spriteSheet, textureFrame, {
@@ -45,6 +49,16 @@ export default class CreatePlayer extends CreateCharacter {
       coolDown: 0,
       speed: 100,
     };
+
+    this.inventory = scene.engine.create.inventory({
+      playerInv: {
+        img: "uiInventory",
+      },
+    });
+
+    if (this.scene.engine.layers?.ui && this.inventory.elements.uiButton) {
+      this.scene.engine.layers.ui.add(this.inventory.elements.uiButton);
+    }
   }
 
   //@ts-ignore

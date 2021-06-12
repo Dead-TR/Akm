@@ -4,6 +4,7 @@ import Game from "../../../game";
 import { CreateEnemy } from "../../../game/create";
 import CreatePlayer from "../../../game/create/player";
 import World from "../../../game/create/world";
+import { addToLayer } from "./configs/addToLayers";
 
 import { animationList } from "./configs/animations";
 import { collisionCellIds } from "./configs/config";
@@ -35,6 +36,7 @@ export default class DefaultScene extends Scene {
     this.engine.load.preload(preloadData);
   }
   create() {
+    this.engine.layers = this.engine.create.layers();
     this.engine.load.animation(animationList);
     this.world = this.engine.create.world(
       true,
@@ -55,7 +57,9 @@ export default class DefaultScene extends Scene {
         },
         sword: "sword_1Fight",
       },
+      inventory: "uiInventory",
     });
+
     enemyCreator(this);
 
     this.state.camera = this.engine.create.camera(
@@ -74,6 +78,7 @@ export default class DefaultScene extends Scene {
     );
 
     this.engine.addListeners("pointerup", () => {});
+    addToLayer(this);
   }
   update() {
     this.player.move(this.state.cursor, this.world.world, collisionCellIds);

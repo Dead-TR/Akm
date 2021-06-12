@@ -1,4 +1,10 @@
-import { CreateCharacter, CreateEnemy, CreatePlayer, World } from "./create";
+import {
+  CreateCharacter,
+  CreateEnemy,
+  CreatePlayer,
+  World,
+  Inventory,
+} from "./create";
 
 export type CharactersPosterity = CreateCharacter | CreateEnemy | CreatePlayer;
 
@@ -24,6 +30,16 @@ export interface UI {
     camera?: Phaser.Cameras.Scene2D.Camera
   ) => Phaser.GameObjects.Arc;
 }
+interface AddLayers {
+  characters: (
+    characters: CharactersPosterity[],
+    layer: Phaser.GameObjects.Layer
+  ) => void;
+  sprites: (
+    element: LayerElementType[] | LayerElementType,
+    layer: Phaser.GameObjects.Layer
+  ) => void;
+}
 export interface CreateGameTypes {
   world: (
     showWorld: boolean,
@@ -39,6 +55,7 @@ export interface CreateGameTypes {
     params: {
       origin?: number[];
       animation: CharacterAnimationsList;
+      inventory: string;
     }
   ) => CreatePlayer;
   enemy: (
@@ -58,8 +75,18 @@ export interface CreateGameTypes {
     actor: Phaser.GameObjects.GameObject | Object,
     world: any
   ) => Phaser.Cameras.Scene2D.Camera;
+  inventory: (settings?: CreateInventorySettings) => Inventory;
+  layers: () => LayersType;
 
+  addToLayer: AddLayers;
   ui: UI;
+}
+
+export interface LayersType {
+  ui: Phaser.GameObjects.Layer;
+  gameElements: {
+    characters: Phaser.GameObjects.Layer;
+  };
 }
 
 export interface UpdateGameTypes {
@@ -148,3 +175,21 @@ export interface EnemyListConfig {
 export interface OptionalCollisionParams {
   characters: CharactersPosterity[];
 }
+
+export interface CreateInventorySettings {
+  playerInv?: {
+    img: string;
+  };
+}
+
+export interface InventoryParams {
+  uiButton?: Phaser.GameObjects.Sprite;
+  background: Phaser.GameObjects.Sprite;
+  mask: Phaser.Display.Masks.GeometryMask;
+  container: Phaser.GameObjects.Container;
+}
+
+export type InventoryStatuses = "close" | "open" | "barter";
+export type LayerElementType =
+  | Phaser.GameObjects.Container
+  | Phaser.GameObjects.Sprite;

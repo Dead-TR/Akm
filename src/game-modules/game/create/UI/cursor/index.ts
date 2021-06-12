@@ -28,7 +28,11 @@ export default function createCursor(
     ease: "Sine.easeInOut",
   });
 
-  this.input.on("pointerdown", () => {
+  this.input.on("pointerdown", (pointer: any, element: any[]) => {
+    if (element.length) {
+      return;
+    }
+
     let fehlerX = 0,
       fehlerY = 0;
 
