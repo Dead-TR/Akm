@@ -3,23 +3,29 @@ import {
   InventoryParams,
   CreateInventorySettings,
   InventoryStatuses,
-} from "../types";
+  Item,
+} from "../../types";
+import { itemList } from "./allItemList";
+import { createCells } from "./createCell";
+import { createItems } from "./createItems";
 
 export function createInventory(
   this: Scene,
-  settings?: CreateInventorySettings
+  params: CreateInventorySettings
 ): Inventory {
-  return new Inventory(this, settings);
+  return new Inventory(this, params);
 }
 
 export default class Inventory {
   scene: Scene;
   elements: InventoryParams;
-  list = {};
+  list: Item[] = [];
   inventoryStatus: InventoryStatuses = "close";
+  allItems = itemList();
 
-  constructor(scene: Scene, settings?: CreateInventorySettings) {
+  constructor(scene: Scene, params: CreateInventorySettings) {
     this.scene = scene;
+    this.list[0] = this.list[1] = this.list[2] = this.allItems[0];
 
     const sceneSizes = {
         w: Number(scene.game.config.width),
@@ -31,7 +37,10 @@ export default class Inventory {
       mask = shape.createGeometryMask(),
       background = scene.add
         .sprite(sceneSizes.w / 2, sceneSizes.h / 2, "inventoryBG")
-        .setOrigin(0.5);
+        .setOrigin(0.5),
+      cells = createCells(scene),
+      items = createItems(scene, cells, this.list);
+
     shape
       .fillRect(
         margin, //start x
@@ -41,7 +50,11 @@ export default class Inventory {
       )
       .setScrollFactor(0);
 
-    container.add([background]).setMask(mask).setAlpha(0).setScrollFactor(0);
+    container
+      .add([background, ...cells, ...items])
+      .setMask(mask)
+      .setAlpha(0)
+      .setScrollFactor(0);
 
     this.elements = {
       background,
@@ -49,42 +62,26 @@ export default class Inventory {
       mask,
     };
 
-    if (settings) {
-      const { playerInv } = settings;
+    this.elements.uiButton = scene.add.sprite(sceneSizes.w, 0, params.img);
+    this.elements.uiButton.setOrigin(1, 0).setScrollFactor(0).setInteractive();
 
-      if (playerInv) {
-        this.elements.uiButton = scene.add.sprite(
-          sceneSizes.w,
-          0,
-          playerInv.img
-        );
-        this.elements.uiButton
-          .setOrigin(1, 0)
-          .setScrollFactor(0)
-          .setInteractive();
+    this.elements.uiButton.on("pointerdown", () => {
+      switch (this.inventoryStatus) {
+        case "close":
+          this.openInventory();
+          break;
 
-        this.elements.uiButton.on("pointerdown", () => {
-          switch (this.inventoryStatus) {
-            case "close":
-              this.openInventory();
-              break;
+        case "open":
+        case "barter":
+          this.closeInventory();
+          break;
 
-            case "open":
-            case "barter":
-              this.closeInventory();
-              break;
-
-            default:
-              break;
-          }
-        });
+        default:
+          break;
       }
-    }
+    });
   }
 
-  getListLength() {
-    return Object.keys(this.list).length;
-  }
   openInventory() {
     this.inventoryStatus = "open";
     this.elements.container.setAlpha(1);

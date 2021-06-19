@@ -75,7 +75,7 @@ export interface CreateGameTypes {
     actor: Phaser.GameObjects.GameObject | Object,
     world: any
   ) => Phaser.Cameras.Scene2D.Camera;
-  inventory: (settings?: CreateInventorySettings) => Inventory;
+  inventory: (params: CreateInventorySettings) => Inventory;
   layers: () => LayersType;
 
   addToLayer: AddLayers;
@@ -177,9 +177,7 @@ export interface OptionalCollisionParams {
 }
 
 export interface CreateInventorySettings {
-  playerInv?: {
-    img: string;
-  };
+  img: string;
 }
 
 export interface InventoryParams {
@@ -193,3 +191,15 @@ export type InventoryStatuses = "close" | "open" | "barter";
 export type LayerElementType =
   | Phaser.GameObjects.Container
   | Phaser.GameObjects.Sprite;
+
+export interface Item {
+  id: number;
+  img: string;
+  name: string;
+  slot: string;
+  price: number;
+}
+
+export interface ItemBody extends Phaser.GameObjects.Sprite {
+  params: Item;
+}

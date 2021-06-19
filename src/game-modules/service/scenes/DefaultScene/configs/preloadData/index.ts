@@ -12,7 +12,8 @@ const data: PreloadTypes[] = [
       ["empty", assets + "img/general/emptyLayers.png"],
       ["uiInventory", assets + "img/general/ui/inventory.png"],
       ["inventoryBG", assets + "img/general/ui/inventoryBG.png"],
-      ["inventoryMask", assets + "img/general/ui/inventoryMask.png"],
+
+      ["inventoryElement_1", assets + "img/general/items/body/1.png"],
     ],
   },
   {

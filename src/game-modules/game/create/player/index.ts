@@ -51,9 +51,7 @@ export default class CreatePlayer extends CreateCharacter {
     };
 
     this.inventory = scene.engine.create.inventory({
-      playerInv: {
-        img: "uiInventory",
-      },
+      img: "uiInventory",
     });
 
     if (this.scene.engine.layers?.ui && this.inventory.elements.uiButton) {
