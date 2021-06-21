@@ -203,3 +203,8 @@ export interface Item {
 export interface ItemBody extends Phaser.GameObjects.Sprite {
   params: Item;
 }
+
+export interface ItemBox {
+  img: Phaser.GameObjects.Sprite;
+  list: Item[];
+}

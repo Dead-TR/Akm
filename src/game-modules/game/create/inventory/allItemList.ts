@@ -16,4 +16,10 @@ const items = [
     slot: "body",
     price: 10,
   },
+  {
+    img: "inventoryElement_2",
+    name: "item2",
+    slot: "arm",
+    price: 10,
+  },
 ];

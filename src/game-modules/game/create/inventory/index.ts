@@ -1,9 +1,10 @@
-import { Scene } from "phaser";
+import { Math, Scene } from "phaser";
 import {
   InventoryParams,
   CreateInventorySettings,
   InventoryStatuses,
   Item,
+  ItemBox,
 } from "../../types";
 import { itemList } from "./allItemList";
 import { createCells } from "./createCell";
@@ -89,5 +90,33 @@ export default class Inventory {
   closeInventory() {
     this.inventoryStatus = "close";
     this.elements.container.setAlpha(0);
+  }
+
+  createBox(
+    x: number,
+    y: number,
+    img: string,
+    params?: { random?: number; search?: number[] }
+  ): ItemBox {
+    const inventoryImg = this.scene.add.sprite(x, y, img);
+    const list: Item[] = [];
+    if (params) {
+      const { random, search } = params;
+      if (random) {
+        for (let index = 0; index < random; index++) {
+          const item = this.allItems[Math.Between(0, this.allItems.length - 1)];
+          list.push(item);
+        }
+      }
+
+      if (search) {
+        search.forEach((id) => {
+          const item = this.allItems[id];
+          list.push(item);
+        });
+      }
+    }
+
+    return { img: inventoryImg, list };
   }
 }

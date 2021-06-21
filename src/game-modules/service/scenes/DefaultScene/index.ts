@@ -7,6 +7,7 @@ import World from "../../../game/create/world";
 import { addToLayer } from "./configs/addToLayers";
 
 import { animationList } from "./configs/animations";
+import { boxCreator } from "./configs/boxCreator";
 import { collisionCellIds } from "./configs/config";
 import enemyCreator, {
   movementWatching as enemyMovement,
@@ -60,6 +61,7 @@ export default class DefaultScene extends Scene {
       inventory: "uiInventory",
     });
 
+    boxCreator(this, this.player.inventory);
     enemyCreator(this);
 
     this.state.camera = this.engine.create.camera(
