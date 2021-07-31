@@ -5,6 +5,7 @@ export function createCells(scene: Scene) {
     rowHeight = 8;
   const cells: Phaser.GameObjects.Graphics[] = [];
   let yAmount = 0;
+
   for (let index = 1; index <= rowWidth * rowHeight; index++) {
     let x = 50;
 

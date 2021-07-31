@@ -19,7 +19,11 @@ export function createItems(
     };
     const body = scene.add
       .sprite(cellData.x, cellData.y, unit.img)
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setInteractive()
+      .on("pointerdown", () => {
+        console.log("item click");
+      });
     //@ts-ignore
     body.params = unit;
 
@@ -29,3 +33,10 @@ export function createItems(
 
   return items;
 }
+
+export const clearItems = (items: ItemBody[]) => {
+  items.forEach((item) => {
+    item.destroy();
+  });
+  items.length = 0;
+};
