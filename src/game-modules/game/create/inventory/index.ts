@@ -32,8 +32,8 @@ export default class Inventory {
   inventoryContainer: Phaser.GameObjects.Container;
   displayedItems: ItemBody[];
 
-  barterButton: Phaser.GameObjects.Sprite;
-  barterMoveButton: Phaser.GameObjects.Sprite;
+  barterButton: Phaser.GameObjects.Sprite | null = null;
+  barterMoveButton: Phaser.GameObjects.Sprite | null = null;
 
   constructor(scene: DefaultScene, params: CreateInventorySettings) {
     this.scene = scene;
@@ -55,8 +55,6 @@ export default class Inventory {
         .on("pointerdown", () => null);
 
     this.cells = createCells(scene);
-    this.barterButton = createButton(scene, "open").setAlpha(0);
-    this.barterMoveButton = createButton(scene, "move").setAlpha(0);
 
     shape
       .fillRect(
@@ -110,7 +108,7 @@ export default class Inventory {
 
     this.elements.container.setAlpha(1);
   }
-  openBarter(list: Item[]) {
+  openBarter(list: Item[], changeList: (newList: Item[]) => void) {
     let barterShowedElements: "box" | "player" = "box";
     this.inventoryStatus = "barter";
     this.displayedItems = createItems(
@@ -120,15 +118,14 @@ export default class Inventory {
       (item) => (this.checkedItem = item)
     );
 
-    this.barterButton.setAlpha(1);
-    this.barterMoveButton.setAlpha(1);
+    this.barterButton = createButton(this.scene, "open").setAlpha(1);
+    this.barterMoveButton = createButton(this.scene, "move").setAlpha(1);
 
     this.barterButton.setDepth(this.inventoryContainer.length).on(
       "pointerup",
       (this.scene,
       () => {
-        console.log("click - barterButton");
-
+        this.checkedItem = null;
         switch (barterShowedElements) {
           case "player":
             clearItems(this.displayedItems);
@@ -164,48 +161,53 @@ export default class Inventory {
       "pointerup",
       (this.scene,
       () => {
-        console.log("click - barterMoveButton", this.checkedItem);
-        switch (barterShowedElements) {
-          case "player":
-            if (this.checkedItem) {
-              const updatedList = this.list.filter((item, i) => {
-                return this.displayedItems[i] !== this.checkedItem;
-              });
-              clearItems(this.displayedItems);
-              this.list = updatedList;
-              this.displayedItems = createItems(
-                this.scene,
-                this.cells,
-                updatedList,
-                (item) => (this.checkedItem = item)
-              );
-              this.inventoryContainer.add([...this.displayedItems]);
-              list.push(this.checkedItem.params);
-            }
-            break;
+        setTimeout(() => {
+          switch (barterShowedElements) {
+            case "player":
+              if (this.checkedItem) {
+                const boxList = [...list];
+                const updatedList = this.list.filter((item, i) => {
+                  return this.displayedItems[i] !== this.checkedItem;
+                });
+                clearItems(this.displayedItems);
+                this.list = updatedList;
+                this.displayedItems = createItems(
+                  this.scene,
+                  this.cells,
+                  updatedList,
+                  (item) => (this.checkedItem = item)
+                );
+                this.inventoryContainer.add([...this.displayedItems]);
+                boxList.push(this.checkedItem.params);
+                this.checkedItem = null;
+                changeList(boxList);
+              }
+              break;
 
-          case "box":
-            if (this.checkedItem) {
-              const updatedList = list.filter((item, i) => {
-                return this.displayedItems[i] !== this.checkedItem;
-              });
-              clearItems(this.displayedItems);
-              list = updatedList;
-              this.displayedItems = createItems(
-                this.scene,
-                this.cells,
-                updatedList,
-                (item) => (this.checkedItem = item)
-              );
-              this.inventoryContainer.add([...this.displayedItems]);
-              this.list.push(this.checkedItem.params);
-            }
+            case "box":
+              if (this.checkedItem) {
+                const updatedList = list.filter((item, i) => {
+                  return this.displayedItems[i] !== this.checkedItem;
+                });
+                clearItems(this.displayedItems);
+                changeList(updatedList);
+                this.displayedItems = createItems(
+                  this.scene,
+                  this.cells,
+                  updatedList,
+                  (item) => (this.checkedItem = item)
+                );
+                this.inventoryContainer.add([...this.displayedItems]);
+                this.list.push(this.checkedItem.params);
+                this.checkedItem = null;
+              }
 
-            break;
+              break;
 
-          default:
-            break;
-        }
+            default:
+              break;
+          }
+        }, 0);
       })
     );
 
@@ -215,8 +217,9 @@ export default class Inventory {
   closeInventory() {
     this.inventoryStatus = "close";
     clearItems(this.displayedItems);
-    this.barterButton.setAlpha(0);
-    this.barterMoveButton.setAlpha(0);
+    this.barterButton?.destroy();
+    this.barterMoveButton?.destroy();
+    this.checkedItem = null;
 
     this.elements.container.setAlpha(0);
   }
@@ -258,8 +261,14 @@ export default class Inventory {
           Math.abs(this.scene.player.actor.y - inventoryImg.y) <
             pointerDistance &&
           !this.scene.player.mortal.enemy
-        )
-          this.openBarter(list);
+        ) {
+          const changeList = (newList: Item[]) => {
+            list.length = 0;
+            list.push(...newList);
+          };
+
+          this.openBarter(list, changeList);
+        }
       });
 
     return { img: inventoryImg, list };
