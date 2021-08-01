@@ -52,7 +52,7 @@ export default class Inventory {
         .on("pointerdown", () => null);
 
     this.cells = createCells(scene);
-    this.barterButton = createButton(scene).setAlpha(0);
+    this.barterButton = createButton(scene).setAlpha(0).setScrollFactor(0);
 
     shape
       .fillRect(
