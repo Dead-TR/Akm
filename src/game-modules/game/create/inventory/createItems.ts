@@ -20,9 +20,10 @@ export function createItems(
     const body = scene.add
       .sprite(cellData.x, cellData.y, unit.img)
       .setOrigin(0, 0)
+      .setScrollFactor(0)
       .setInteractive()
       .on("pointerdown", () => {
-        console.log("item click");
+        console.log("item click", unit.img, index);
       });
     //@ts-ignore
     body.params = unit;

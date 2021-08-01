@@ -35,7 +35,7 @@ export default class Inventory {
   constructor(scene: DefaultScene, params: CreateInventorySettings) {
     this.scene = scene;
     this.list[0] = this.list[1] = this.list[2] = this.allItems[0];
-    this.inventoryContainer = scene.add.container(0, 0);
+    this.inventoryContainer = scene.add.container(0, 0).setScrollFactor(0);
 
     const sceneSizes = {
         w: Number(scene.game.config.width),
@@ -66,8 +66,7 @@ export default class Inventory {
     container
       .add([background, ...this.cells])
       .setMask(mask)
-      .setAlpha(0)
-      .setScrollFactor(0);
+      .setAlpha(0);
 
     this.elements = {
       background,
@@ -103,6 +102,7 @@ export default class Inventory {
     this.elements.container.setAlpha(1);
   }
   openBarter(list: Item[]) {
+    let barterShowedElements: "box" | "player" = "box";
     this.inventoryStatus = "barter";
     this.displayedItems = createItems(this.scene, this.cells, list);
     this.barterButton.setAlpha(1);
@@ -112,9 +112,28 @@ export default class Inventory {
       () => {
         console.log("click");
 
-        clearItems(this.displayedItems);
-        this.displayedItems = createItems(this.scene, this.cells, this.list);
-        this.inventoryContainer.add([...this.displayedItems]);
+        switch (barterShowedElements) {
+          case "player":
+            clearItems(this.displayedItems);
+            this.displayedItems = createItems(this.scene, this.cells, list);
+            this.inventoryContainer.add([...this.displayedItems]);
+            barterShowedElements = "box";
+            break;
+
+          case "box":
+            clearItems(this.displayedItems);
+            this.displayedItems = createItems(
+              this.scene,
+              this.cells,
+              this.list
+            );
+            this.inventoryContainer.add([...this.displayedItems]);
+            barterShowedElements = "player";
+            break;
+
+          default:
+            break;
+        }
       })
     );
 
