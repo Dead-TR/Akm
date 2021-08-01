@@ -24,13 +24,16 @@ export default class Inventory {
   scene: DefaultScene;
   elements: InventoryParams;
   list: Item[] = [];
+  checkedItem: ItemBody | null = null;
   inventoryStatus: InventoryStatuses = "close";
   allItems = itemList();
 
   cells: Phaser.GameObjects.Graphics[];
   inventoryContainer: Phaser.GameObjects.Container;
   displayedItems: ItemBody[];
+
   barterButton: Phaser.GameObjects.Sprite;
+  barterMoveButton: Phaser.GameObjects.Sprite;
 
   constructor(scene: DefaultScene, params: CreateInventorySettings) {
     this.scene = scene;
@@ -52,7 +55,8 @@ export default class Inventory {
         .on("pointerdown", () => null);
 
     this.cells = createCells(scene);
-    this.barterButton = createButton(scene).setAlpha(0).setScrollFactor(0);
+    this.barterButton = createButton(scene, "open").setAlpha(0);
+    this.barterMoveButton = createButton(scene, "move").setAlpha(0);
 
     shape
       .fillRect(
@@ -96,7 +100,12 @@ export default class Inventory {
 
   openInventory() {
     this.inventoryStatus = "open";
-    this.displayedItems = createItems(this.scene, this.cells, this.list);
+    this.displayedItems = createItems(
+      this.scene,
+      this.cells,
+      this.list,
+      (item) => (this.checkedItem = item)
+    );
     this.inventoryContainer.add([...this.displayedItems]);
 
     this.elements.container.setAlpha(1);
@@ -104,18 +113,31 @@ export default class Inventory {
   openBarter(list: Item[]) {
     let barterShowedElements: "box" | "player" = "box";
     this.inventoryStatus = "barter";
-    this.displayedItems = createItems(this.scene, this.cells, list);
+    this.displayedItems = createItems(
+      this.scene,
+      this.cells,
+      list,
+      (item) => (this.checkedItem = item)
+    );
+
     this.barterButton.setAlpha(1);
+    this.barterMoveButton.setAlpha(1);
+
     this.barterButton.setDepth(this.inventoryContainer.length).on(
       "pointerup",
       (this.scene,
       () => {
-        console.log("click");
+        console.log("click - barterButton");
 
         switch (barterShowedElements) {
           case "player":
             clearItems(this.displayedItems);
-            this.displayedItems = createItems(this.scene, this.cells, list);
+            this.displayedItems = createItems(
+              this.scene,
+              this.cells,
+              list,
+              (item) => (this.checkedItem = item)
+            );
             this.inventoryContainer.add([...this.displayedItems]);
             barterShowedElements = "box";
             break;
@@ -125,7 +147,8 @@ export default class Inventory {
             this.displayedItems = createItems(
               this.scene,
               this.cells,
-              this.list
+              this.list,
+              (item) => (this.checkedItem = item)
             );
             this.inventoryContainer.add([...this.displayedItems]);
             barterShowedElements = "player";
@@ -137,9 +160,55 @@ export default class Inventory {
       })
     );
 
-    // this.barterButton =
-    //   .setOrigin(0.5)
-    // .setInteractive()
+    this.barterMoveButton.setDepth(this.inventoryContainer.length).on(
+      "pointerup",
+      (this.scene,
+      () => {
+        console.log("click - barterMoveButton", this.checkedItem);
+        switch (barterShowedElements) {
+          case "player":
+            if (this.checkedItem) {
+              const updatedList = this.list.filter((item, i) => {
+                return this.displayedItems[i] !== this.checkedItem;
+              });
+              clearItems(this.displayedItems);
+              this.list = updatedList;
+              this.displayedItems = createItems(
+                this.scene,
+                this.cells,
+                updatedList,
+                (item) => (this.checkedItem = item)
+              );
+              this.inventoryContainer.add([...this.displayedItems]);
+              list.push(this.checkedItem.params);
+            }
+            break;
+
+          case "box":
+            if (this.checkedItem) {
+              const updatedList = list.filter((item, i) => {
+                return this.displayedItems[i] !== this.checkedItem;
+              });
+              clearItems(this.displayedItems);
+              list = updatedList;
+              this.displayedItems = createItems(
+                this.scene,
+                this.cells,
+                updatedList,
+                (item) => (this.checkedItem = item)
+              );
+              this.inventoryContainer.add([...this.displayedItems]);
+              this.list.push(this.checkedItem.params);
+            }
+
+            break;
+
+          default:
+            break;
+        }
+      })
+    );
+
     this.inventoryContainer.add([...this.displayedItems]);
     this.elements.container.setAlpha(1);
   }
@@ -147,10 +216,8 @@ export default class Inventory {
     this.inventoryStatus = "close";
     clearItems(this.displayedItems);
     this.barterButton.setAlpha(0);
+    this.barterMoveButton.setAlpha(0);
 
-    // if (this.barterButton) {
-    //   this.barterButton.destroy();
-    // }
     this.elements.container.setAlpha(0);
   }
 

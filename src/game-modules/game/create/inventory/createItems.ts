@@ -4,7 +4,8 @@ import { Item, ItemBody } from "../../types";
 export function createItems(
   scene: Scene,
   cells: Phaser.GameObjects.Graphics[],
-  itemList: Item[]
+  itemList: Item[],
+  callback: (checkedItem: ItemBody | null) => void
 ) {
   const items: ItemBody[] = [];
   for (let index = 0; index < itemList.length; index++) {
@@ -21,12 +22,15 @@ export function createItems(
       .sprite(cellData.x, cellData.y, unit.img)
       .setOrigin(0, 0)
       .setScrollFactor(0)
-      .setInteractive()
-      .on("pointerdown", () => {
-        console.log("item click", unit.img, index);
-      });
+      .setInteractive();
+
     //@ts-ignore
     body.params = unit;
+    body.on("pointerdown", () => {
+      //@ts-ignore
+      callback(body);
+      console.log("item click", index);
+    });
 
     //@ts-ignore
     items.push(body);

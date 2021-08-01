@@ -17,6 +17,7 @@ const data: PreloadTypes[] = [
       ["inventoryElement_2", assets + "img/general/items/arm/1.png"],
       ["inventoryBox", assets + "img/general/items/box.png"],
       ["barterButton", assets + "img/general/b_button.png"],
+      ["moveButton", assets + "img/general/to_button.png"],
     ],
   },
   {
