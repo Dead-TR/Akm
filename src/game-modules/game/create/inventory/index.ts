@@ -6,12 +6,16 @@ import {
   Item,
   ItemBox,
   ItemBody,
+  ShowItemParamElements,
 } from "../../types";
 import { itemList } from "./allItemList";
 import { createCells } from "./createCell";
 import { clearItems, createItems } from "./createItems";
 import DefaultScene from "../../../service/scenes/DefaultScene";
 import { createButton } from "./createButton";
+import { itemCallBack } from "./itemCallBack";
+import { paramTextYPosition } from "../../consts";
+import { clearParams } from "./clearParamsName";
 
 export function createInventory(
   this: DefaultScene,
@@ -25,6 +29,8 @@ export default class Inventory {
   elements: InventoryParams;
   list: Item[] = [];
   checkedItem: ItemBody | null = null;
+  showItemParamElements: ShowItemParamElements;
+  frame: Phaser.GameObjects.Sprite;
   inventoryStatus: InventoryStatuses = "close";
   allItems = itemList();
 
@@ -36,15 +42,39 @@ export default class Inventory {
   barterMoveButton: Phaser.GameObjects.Sprite | null = null;
 
   constructor(scene: DefaultScene, params: CreateInventorySettings) {
+    const { width, height } = scene.game.config;
     this.scene = scene;
     this.list[0] = this.list[1] = this.list[2] = this.allItems[0];
     this.inventoryContainer = scene.add.container(0, 0).setScrollFactor(0);
+    this.frame = scene.add.sprite(-100, -100, "frame").setOrigin(0, 0);
 
     const sceneSizes = {
-        w: Number(scene.game.config.width),
-        h: Number(scene.game.config.height),
-      },
-      margin = 15,
+      w: Number(width),
+      h: Number(height),
+    };
+
+    const createShowItemParamElements = () => {
+      const elementNames: (keyof ShowItemParamElements)[] = [
+        "defence",
+        "attack",
+        "speed",
+        "hp",
+      ];
+      const elements: ShowItemParamElements = {};
+
+      elementNames.forEach((name) => {
+        const element = scene.add
+          .text(sceneSizes.w - 30, paramTextYPosition, "")
+          .setOrigin(1, 0.5);
+        elements[name] = element;
+      });
+
+      return elements;
+    };
+
+    this.showItemParamElements = createShowItemParamElements();
+
+    const margin = 15,
       shape = scene.make.graphics({}),
       mask = shape.createGeometryMask(),
       container = this.inventoryContainer,
@@ -65,8 +95,17 @@ export default class Inventory {
       )
       .setScrollFactor(0);
 
+    const paramsElements: Phaser.GameObjects.Text[] = Object.values(
+      this.showItemParamElements
+    );
     container
-      .add([background, ...this.cells])
+      .add([
+        background,
+        ...this.cells,
+        ...paramsElements,
+        this.frame,
+        //  defence, attack, speed, hp
+      ])
       .setMask(mask)
       .setAlpha(0);
 
@@ -98,24 +137,27 @@ export default class Inventory {
 
   openInventory() {
     this.inventoryStatus = "open";
+
     this.displayedItems = createItems(
       this.scene,
       this.cells,
       this.list,
-      (item) => (this.checkedItem = item)
+      itemCallBack.bind(this)
     );
     this.inventoryContainer.add([...this.displayedItems]);
 
     this.elements.container.setAlpha(1);
   }
   openBarter(list: Item[], changeList: (newList: Item[]) => void) {
+    this.elements.uiButton?.setTexture("uiInventoryBox");
+
     let barterShowedElements: "box" | "player" = "box";
     this.inventoryStatus = "barter";
     this.displayedItems = createItems(
       this.scene,
       this.cells,
       list,
-      (item) => (this.checkedItem = item)
+      itemCallBack.bind(this)
     );
 
     this.barterButton = createButton(this.scene, "open").setAlpha(1);
@@ -126,32 +168,40 @@ export default class Inventory {
       (this.scene,
       () => {
         this.checkedItem = null;
+        clearParams(this.showItemParamElements);
+        this.frame.setPosition(-100, -100);
+
         switch (barterShowedElements) {
           case "player":
+            this.elements.uiButton?.setTexture("uiInventoryBox");
+
             clearItems(this.displayedItems);
             this.displayedItems = createItems(
               this.scene,
               this.cells,
               list,
-              (item) => (this.checkedItem = item)
+              itemCallBack.bind(this)
             );
             this.inventoryContainer.add([...this.displayedItems]);
             barterShowedElements = "box";
             break;
 
           case "box":
+            this.elements.uiButton?.setTexture("uiInventory");
+
             clearItems(this.displayedItems);
             this.displayedItems = createItems(
               this.scene,
               this.cells,
               this.list,
-              (item) => (this.checkedItem = item)
+              itemCallBack.bind(this)
             );
             this.inventoryContainer.add([...this.displayedItems]);
             barterShowedElements = "player";
             break;
 
           default:
+            this.elements.uiButton?.setTexture("uiInventory");
             break;
         }
       })
@@ -175,11 +225,13 @@ export default class Inventory {
                   this.scene,
                   this.cells,
                   updatedList,
-                  (item) => (this.checkedItem = item)
+                  itemCallBack.bind(this)
                 );
                 this.inventoryContainer.add([...this.displayedItems]);
                 boxList.push(this.checkedItem.params);
                 this.checkedItem = null;
+                this.frame.setPosition(-100, -100);
+                clearParams(this.showItemParamElements);
                 changeList(boxList);
               }
               break;
@@ -195,11 +247,13 @@ export default class Inventory {
                   this.scene,
                   this.cells,
                   updatedList,
-                  (item) => (this.checkedItem = item)
+                  itemCallBack.bind(this)
                 );
                 this.inventoryContainer.add([...this.displayedItems]);
                 this.list.push(this.checkedItem.params);
                 this.checkedItem = null;
+                this.frame.setPosition(-100, -100);
+                clearParams(this.showItemParamElements);
               }
 
               break;
@@ -215,11 +269,15 @@ export default class Inventory {
     this.elements.container.setAlpha(1);
   }
   closeInventory() {
+    this.elements.uiButton?.setTexture("uiInventory");
+
     this.inventoryStatus = "close";
     clearItems(this.displayedItems);
     this.barterButton?.destroy();
     this.barterMoveButton?.destroy();
     this.checkedItem = null;
+    this.frame.setPosition(-100, -100);
+    clearParams(this.showItemParamElements);
 
     this.elements.container.setAlpha(0);
   }

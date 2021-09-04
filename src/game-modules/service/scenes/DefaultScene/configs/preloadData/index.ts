@@ -8,9 +8,10 @@ const data: PreloadTypes[] = [
     method: "image",
     data: [
       ["exampleGrassTile", assets + "img/DefaultScene/grass.png"],
-      ["cursor", assets + "img/general/cursor.png"],
+      ["frame", assets + "img/general/frame.png"],
       ["empty", assets + "img/general/emptyLayers.png"],
       ["uiInventory", assets + "img/general/ui/inventory.png"],
+      ["uiInventoryBox", assets + "img/general/ui/box.png"],
       ["inventoryBG", assets + "img/general/ui/inventoryBG.png"],
 
       ["inventoryElement_1", assets + "img/general/items/body/1.png"],

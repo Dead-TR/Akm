@@ -192,12 +192,22 @@ export type LayerElementType =
   | Phaser.GameObjects.Container
   | Phaser.GameObjects.Sprite;
 
+export interface ItemParams {
+  defence?: number;
+  attack?: number;
+  speed?: number;
+  hp?: number;
+}
+
 export interface Item {
-  id: number;
   img: string;
   name: string;
-  slot: string;
+  slot: ItemSlots;
   price: number;
+
+  params?: ItemParams;
+
+  message?: string;
 }
 
 export interface ItemBody extends Phaser.GameObjects.Sprite {
@@ -207,4 +217,13 @@ export interface ItemBody extends Phaser.GameObjects.Sprite {
 export interface ItemBox {
   img: Phaser.GameObjects.Sprite;
   list: Item[];
+}
+
+export type ItemSlots = "arm" | "body" | "leg" | "sword" | "other";
+
+export interface ShowItemParamElements {
+  defence?: Phaser.GameObjects.Text;
+  attack?: Phaser.GameObjects.Text;
+  speed?: Phaser.GameObjects.Text;
+  hp?: Phaser.GameObjects.Text;
 }
