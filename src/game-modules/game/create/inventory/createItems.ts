@@ -8,6 +8,8 @@ export function createItems(
   callback: (checkedItem: ItemBody | null) => void
 ) {
   const items: ItemBody[] = [];
+  console.log("t>", items, itemList);
+
   for (let index = 0; index < itemList.length; index++) {
     if (index > cells.length - 1) {
       break;
@@ -23,6 +25,10 @@ export function createItems(
       .setOrigin(0, 0)
       .setScrollFactor(0)
       .setInteractive();
+
+    if (unit.picked) {
+      body.setTint(0x87ff4b);
+    }
 
     //@ts-ignore
     body.params = unit;

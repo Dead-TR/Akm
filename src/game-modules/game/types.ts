@@ -204,9 +204,9 @@ export interface Item {
   name: string;
   slot: ItemSlots;
   price: number;
+  picked: boolean;
 
   params?: ItemParams;
-
   message?: string;
 }
 

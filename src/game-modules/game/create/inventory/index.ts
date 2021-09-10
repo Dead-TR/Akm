@@ -7,6 +7,7 @@ import {
   ItemBox,
   ItemBody,
   ShowItemParamElements,
+  ItemParams,
 } from "../../types";
 import { itemList } from "./allItemList";
 import { createCells } from "./createCell";
@@ -16,6 +17,7 @@ import { createButton } from "./createButton";
 import { itemCallBack } from "./itemCallBack";
 import { paramTextYPosition } from "../../consts";
 import { clearParams } from "./clearParamsName";
+import { setUserParams } from "./changeUserParams";
 
 export function createInventory(
   this: DefaultScene,
@@ -38,13 +40,18 @@ export default class Inventory {
   inventoryContainer: Phaser.GameObjects.Container;
   displayedItems: ItemBody[];
 
+  pickButton: Phaser.GameObjects.Sprite | null = null;
   barterButton: Phaser.GameObjects.Sprite | null = null;
   barterMoveButton: Phaser.GameObjects.Sprite | null = null;
 
   constructor(scene: DefaultScene, params: CreateInventorySettings) {
     const { width, height } = scene.game.config;
     this.scene = scene;
-    this.list[0] = this.list[1] = this.list[2] = this.allItems[0];
+
+    this.list[0] =
+      { ...this.list[1] } =
+      { ...this.list[2] } =
+        { ...this.allItems[0] };
     this.inventoryContainer = scene.add.container(0, 0).setScrollFactor(0);
     this.frame = scene.add.sprite(-100, -100, "frame").setOrigin(0, 0);
 
@@ -99,13 +106,7 @@ export default class Inventory {
       this.showItemParamElements
     );
     container
-      .add([
-        background,
-        ...this.cells,
-        ...paramsElements,
-        this.frame,
-        //  defence, attack, speed, hp
-      ])
+      .add([background, ...this.cells, ...paramsElements, this.frame])
       .setMask(mask)
       .setAlpha(0);
 
@@ -137,6 +138,7 @@ export default class Inventory {
 
   openInventory() {
     this.inventoryStatus = "open";
+    this.pickButton = createButton(this.scene, "pick", 0).setAlpha(1);
 
     this.displayedItems = createItems(
       this.scene,
@@ -144,9 +146,48 @@ export default class Inventory {
       this.list,
       itemCallBack.bind(this)
     );
-    this.inventoryContainer.add([...this.displayedItems]);
+    this.inventoryContainer.add([...this.displayedItems, this.pickButton]);
 
     this.elements.container.setAlpha(1);
+    this.pickButton.on("pointerup", () => {
+      const player = this.scene.player;
+      if (this.checkedItem) {
+        const selectedSlot = this.checkedItem.params.slot;
+        this.displayedItems.forEach((item) => {
+          if (item.params.slot === selectedSlot) {
+            item.params.picked = false;
+            item.clearTint();
+
+            if (item.params.params) {
+              setUserParams(player, item.params.params, "clear");
+            }
+          }
+        });
+
+        this.checkedItem.params.picked = true;
+        this.checkedItem.setTint(0x87ff4b);
+
+        const newUserParams: ItemParams = {};
+
+        this.list.forEach((value) => {
+          if (value.picked) {
+            for (const key in value.params) {
+              //@ts-ignore
+              const paramValue: number = value.params[key];
+              //@ts-ignore
+              if (newUserParams[key]) {
+                //@ts-ignore
+                newUserParams[key] += paramValue;
+              } else {
+                //@ts-ignore
+                newUserParams[key] = paramValue;
+              }
+            }
+          }
+        });
+        setUserParams(player, newUserParams, "set");
+      }
+    });
   }
   openBarter(list: Item[], changeList: (newList: Item[]) => void) {
     this.elements.uiButton?.setTexture("uiInventoryBox");
@@ -160,8 +201,8 @@ export default class Inventory {
       itemCallBack.bind(this)
     );
 
-    this.barterButton = createButton(this.scene, "open").setAlpha(1);
-    this.barterMoveButton = createButton(this.scene, "move").setAlpha(1);
+    this.barterButton = createButton(this.scene, "open", 0).setAlpha(1);
+    this.barterMoveButton = createButton(this.scene, "move", 1).setAlpha(1);
 
     this.barterButton.setDepth(this.inventoryContainer.length).on(
       "pointerup",
@@ -214,7 +255,7 @@ export default class Inventory {
         setTimeout(() => {
           switch (barterShowedElements) {
             case "player":
-              if (this.checkedItem) {
+              if (this.checkedItem && !this.checkedItem.params.picked) {
                 const boxList = [...list];
                 const updatedList = this.list.filter((item, i) => {
                   return this.displayedItems[i] !== this.checkedItem;
@@ -273,6 +314,7 @@ export default class Inventory {
 
     this.inventoryStatus = "close";
     clearItems(this.displayedItems);
+    this.pickButton?.destroy();
     this.barterButton?.destroy();
     this.barterMoveButton?.destroy();
     this.checkedItem = null;
@@ -295,14 +337,14 @@ export default class Inventory {
         for (let index = 0; index < random; index++) {
           const item =
             this.allItems[PhaserMath.Between(0, this.allItems.length - 1)];
-          list.push(item);
+          list.push({ ...item });
         }
       }
 
       if (search) {
         search.forEach((id) => {
           const item = this.allItems[id];
-          list.push(item);
+          list.push({ ...item });
         });
       }
     }
@@ -312,13 +354,12 @@ export default class Inventory {
       .setInteractive()
       .on("pointerdown", () => {
         const pointerDistance = 60;
+        const player = this.scene.player;
 
         if (
-          Math.abs(this.scene.player.actor.x - inventoryImg.x) <
-            pointerDistance &&
-          Math.abs(this.scene.player.actor.y - inventoryImg.y) <
-            pointerDistance &&
-          !this.scene.player.mortal.enemy
+          Math.abs(player.actor.x - inventoryImg.x) < pointerDistance &&
+          Math.abs(player.actor.y - inventoryImg.y) < pointerDistance &&
+          !player.mortal.enemy
         ) {
           const changeList = (newList: Item[]) => {
             list.length = 0;
