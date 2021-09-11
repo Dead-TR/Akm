@@ -1,6 +1,6 @@
 import { Inventory } from "..";
 import DefaultScene from "../../../service/scenes/DefaultScene";
-import { CharacterAnimationsList } from "../../types";
+import { CharacterAnimationsList, UserSkills } from "../../types";
 import CreateCharacter from "../character";
 
 let test: any;
@@ -22,7 +22,13 @@ export function createPlayer(
 export default class CreatePlayer extends CreateCharacter {
   scene: DefaultScene;
   inventory: Inventory;
-
+  skills: UserSkills = {
+    health: 10,
+    armor: 0,
+    attack: 1,
+    coolDown: 20,
+    speed: 100,
+  };
   constructor(
     scene: DefaultScene,
     x: number,
@@ -43,11 +49,7 @@ export default class CreatePlayer extends CreateCharacter {
     this.animations = params.animation;
 
     this.params = {
-      health: 100,
-      armor: 999999999999999,
-      attack: 11,
-      coolDown: 0,
-      speed: 100,
+      ...this.skills,
     };
 
     this.inventory = scene.engine.create.inventory({

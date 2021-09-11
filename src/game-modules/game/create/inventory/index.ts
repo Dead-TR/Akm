@@ -62,6 +62,7 @@ export default class Inventory {
 
     const createShowItemParamElements = () => {
       const elementNames: (keyof ShowItemParamElements)[] = [
+        "coolDown",
         "defence",
         "attack",
         "speed",
@@ -151,10 +152,18 @@ export default class Inventory {
     this.elements.container.setAlpha(1);
     this.pickButton.on("pointerup", () => {
       const player = this.scene.player;
+      console.log(
+        "🚀 ~ file: index.ts ~ line 154 ~ Inventory ~ this.pickButton.on ~ player",
+        player
+      );
+
       if (this.checkedItem) {
         const selectedSlot = this.checkedItem.params.slot;
         this.displayedItems.forEach((item) => {
-          if (item.params.slot === selectedSlot) {
+          if (
+            item.params.slot === selectedSlot &&
+            item.params !== this.checkedItem?.params
+          ) {
             item.params.picked = false;
             item.clearTint();
 
@@ -164,10 +173,20 @@ export default class Inventory {
           }
         });
 
-        this.checkedItem.params.picked = true;
-        this.checkedItem.setTint(0x87ff4b);
+        this.checkedItem.params.picked = !this.checkedItem.params.picked;
+        if (this.checkedItem.params.picked) {
+          this.checkedItem.setTint(0x87ff4b);
+        } else {
+          this.checkedItem.clearTint();
+        }
 
-        const newUserParams: ItemParams = {};
+        const newUserParams: ItemParams = {
+          attack: player.skills.attack,
+          defence: player.skills.armor,
+          hp: player.skills.health,
+          speed: player.skills.speed,
+          coolDown: player.skills.coolDown,
+        };
 
         this.list.forEach((value) => {
           if (value.picked) {
@@ -322,6 +341,8 @@ export default class Inventory {
     clearParams(this.showItemParamElements);
 
     this.elements.container.setAlpha(0);
+
+    console.log("plaeyer", this.scene.player);
   }
 
   createBox(

@@ -1,14 +1,6 @@
 import { ItemParams } from "../../types";
 import CreatePlayer from "../player";
 
-const playerDefaultParams = {
-  health: 10,
-  armor: 0,
-  attack: 1,
-  coolDown: 20,
-  speed: 100,
-};
-
 export function setUserParams(
   player: CreatePlayer,
   itemParams: ItemParams,
@@ -18,27 +10,28 @@ export function setUserParams(
     //@ts-ignore
     const value: number = itemParams[key];
 
-    const { params } = player;
+    const { params, skills } = player;
     switch (key) {
       case "attack":
-        params.attack =
-          operation === "clear" ? playerDefaultParams.attack : value;
+        params.attack = operation !== "clear" && value ? value : skills.attack;
         break;
+
       case "defence":
-        params.armor =
-          operation === "clear" ? playerDefaultParams.armor : value;
+        params.armor = operation !== "clear" && value ? value : skills.armor;
         break;
+
       case "hp":
-        params.health =
-          operation === "clear" ? playerDefaultParams.health : value;
-
+        params.health = operation !== "clear" && value ? value : skills.health;
         break;
+
       case "speed":
-        params.speed =
-          operation === "clear" ? playerDefaultParams.speed : value;
-
+        params.speed = operation !== "clear" && value ? value : skills.speed;
         break;
 
+      case "coolDown":
+        params.coolDown =
+          operation !== "clear" && value ? value : skills.coolDown;
+        break;
       default:
         break;
     }

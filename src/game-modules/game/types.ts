@@ -197,6 +197,15 @@ export interface ItemParams {
   attack?: number;
   speed?: number;
   hp?: number;
+  coolDown?: number;
+}
+
+export interface UserSkills {
+  health: number;
+  armor: number;
+  attack: number;
+  coolDown: number;
+  speed: number;
 }
 
 export interface Item {
@@ -222,6 +231,7 @@ export interface ItemBox {
 export type ItemSlots = "arm" | "body" | "leg" | "sword" | "other";
 
 export interface ShowItemParamElements {
+  coolDown?: Phaser.GameObjects.Text;
   defence?: Phaser.GameObjects.Text;
   attack?: Phaser.GameObjects.Text;
   speed?: Phaser.GameObjects.Text;

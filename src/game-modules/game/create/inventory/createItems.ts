@@ -14,24 +14,24 @@ export function createItems(
     if (index > cells.length - 1) {
       break;
     }
-    const unit = itemList[index];
+    const itemUnit = itemList[index];
 
     const cellData = {
       x: cells[index].x + 3,
       y: cells[index].y + 3,
     };
     const body = scene.add
-      .sprite(cellData.x, cellData.y, unit.img)
+      .sprite(cellData.x, cellData.y, itemUnit.img)
       .setOrigin(0, 0)
       .setScrollFactor(0)
       .setInteractive();
 
-    if (unit.picked) {
+    if (itemUnit.picked) {
       body.setTint(0x87ff4b);
     }
 
     //@ts-ignore
-    body.params = unit;
+    body.params = itemUnit;
     body.on("pointerdown", () => {
       //@ts-ignore
       callback(body);
