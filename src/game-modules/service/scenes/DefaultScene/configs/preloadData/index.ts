@@ -7,19 +7,27 @@ const data: PreloadTypes[] = [
   {
     method: "image",
     data: [
+      // any/worlds:
       ["exampleGrassTile", assets + "img/DefaultScene/grass.png"],
       ["frame", assets + "img/general/frame.png"],
       ["empty", assets + "img/general/emptyLayers.png"],
-      ["uiInventory", assets + "img/general/ui/inventory.png"],
-      ["uiInventoryBox", assets + "img/general/ui/box.png"],
-      ["inventoryBG", assets + "img/general/ui/inventoryBG.png"],
+      ["inventoryBox", assets + "img/general/items/box.png"],
 
+      //inventory:
+      // > inv elements
       ["inventoryElement_1", assets + "img/general/items/body/1.png"],
       ["inventoryElement_2", assets + "img/general/items/arm/1.png"],
-      ["inventoryBox", assets + "img/general/items/box.png"],
+      // > inv UI
+      ["inventoryBG", assets + "img/general/ui/inventoryBG.png"],
+      // >> inv buttons
+      ["uiInventory", assets + "img/general/ui/inventory.png"],
+      ["uiInventoryBox", assets + "img/general/ui/box.png"],
       ["barterButton", assets + "img/general/b_button.png"],
       ["moveButton", assets + "img/general/to_button.png"],
       ["pickButton", assets + "img/general/pick_button.png"],
+
+      //portraits:
+      ["playerPortrait", assets + "img/DefaultScene/portraits/player.jpg"],
     ],
   },
   {

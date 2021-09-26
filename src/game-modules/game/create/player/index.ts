@@ -29,6 +29,8 @@ export default class CreatePlayer extends CreateCharacter {
     coolDown: 20,
     speed: 100,
   };
+  portrait: Phaser.GameObjects.Sprite;
+
   constructor(
     scene: DefaultScene,
     x: number,
@@ -56,8 +58,14 @@ export default class CreatePlayer extends CreateCharacter {
       img: "uiInventory",
     });
 
+    this.portrait = scene.add
+      .sprite(0, 0, "playerPortrait")
+      .setOrigin(0, 0)
+      .setScrollFactor(0);
+
     if (this.scene.engine.layers?.ui && this.inventory.elements.uiButton) {
       this.scene.engine.layers.ui.add(this.inventory.elements.uiButton);
+      this.scene.engine.layers.ui.add(this.portrait);
     }
   }
 
